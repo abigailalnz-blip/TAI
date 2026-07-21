@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Callboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --backstage:#1C1815;
+  --backstage-2:#241F1A;
+  --panel:#2B241E;
+  --paper:#F2E9D8;
+  --paper-dim:#E7DBC2;
+  --ink:#2B241E;
+  --ink-soft:#6B5E4C;
+  --line:#C9B892;
+  --gold:#D4A73D;
+  --rose:#A8496B;
+  --oxblood:#7A2331;
+  --teal:#3E6B64;
+  --retail:#5C7A4A;
+  --longform:#6B4C7A;
+  --corpblue:#3E5C7A;
+  --eventscat:#8C5E2A;
+  --cream-text:#EFE6D3;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--backstage);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(212,167,61,0.06), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(122,35,49,0.08), transparent 45%);
+  font-family:'Inter',sans-serif;
+  color:var(--cream-text);
+  min-height:100vh;
+}
+header{
+  padding:28px 32px 18px;
+  border-bottom:2px solid var(--gold);
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+header h1{
+  font-family:'Abril Fatface',serif;
+  font-size:34px;
+  margin:0;
+  color:var(--gold);
+  letter-spacing:1px;
+}
+header .sub{
+  font-size:12px;
+  color:var(--cream-text);
+  opacity:0.65;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:0.5px;
+}
+nav{
+  display:flex;
+  gap:6px;
+  padding:16px 32px 0;
+}
+nav button{
+  background:var(--panel);
+  color:var(--cream-text);
+  border:1px solid rgba(212,167,61,0.25);
+  border-bottom:none;
+  padding:10px 20px;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:13px;
+  letter-spacing:0.4px;
+  cursor:pointer;
+  border-radius:8px 8px 0 0;
+  opacity:0.6;
+}
+nav button.active{
+  background:var(--backstage-2);
+  opacity:1;
+  color:var(--gold);
+  border-color:var(--gold);
+}
+main{
+  padding:20px 32px 60px;
+  background:var(--backstage-2);
+  min-height:70vh;
+}
+.tab{display:none;}
+.tab.active{display:block;}
+
+/* BOARD */
+.board{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding-bottom:20px;
+}
+.col{
+  min-width:230px;
+  max-width:230px;
+  flex:0 0 auto;
+}
+.col h3{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  color:var(--gold);
+  font-family:'IBM Plex Mono',monospace;
+  border-bottom:1px dashed rgba(212,167,61,0.4);
+  padding-bottom:8px;
+  margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+}
+.col h3 span.count{color:var(--cream-text);opacity:0.5;}
+.card{
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:2px;
+  padding:12px 12px 10px;
+  margin-bottom:12px;
+  cursor:pointer;
+  position:relative;
+  box-shadow:0 3px 6px rgba(0,0,0,0.35);
+  transition:transform .1s;
+}
+.card:hover{transform:translateY(-2px);}
+.tape{
+  position:absolute;
+  top:-6px;left:14px;
+  width:44px;height:14px;
+  opacity:0.85;
+  transform:rotate(-2deg);
+  border-radius:1px;
+}
+.card .cname{font-weight:700;font-size:14px;margin-top:6px;}
+.card .cclient{font-size:11px;color:var(--ink-soft);margin-bottom:6px;}
+.badge{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:3px;
+  margin-right:4px;
+  color:#fff;
+}
+.card .date{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:6px;color:var(--ink-soft);}
+.sfxprog{font-size:10px;font-family:'IBM Plex Mono',monospace;margin-top:6px;color:var(--oxblood);}
+
+/* TASKS */
+.tasklist{max-width:640px;}
+.taskrow{
+  display:flex;align-items:center;gap:10px;
+  background:var(--panel);
+  padding:10px 14px;border-radius:6px;margin-bottom:8px;
+  border-left:3px solid var(--gold);
+}
+.taskrow.done{opacity:0.4;text-decoration:line-through;border-left-color:var(--teal);}
+.taskrow input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);}
+.taskrow .ttitle{flex:1;font-size:14px;}
+.taskrow .tmeta{font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.6;}
+.taskrow .tdel{cursor:pointer;opacity:0.5;font-size:14px;}
+.taskrow .tdel:hover{opacity:1;}
+
+/* CLIENTS */
+.clientgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.clientcard{
+  background:var(--paper);color:var(--ink);border-radius:4px;padding:14px;
+  box-shadow:0 3px 6px rgba(0,0,0,0.3);cursor:pointer;
+}
+.clientcard h4{margin:0 0 4px;font-family:'Abril Fatface',serif;font-size:18px;color:var(--oxblood);}
+.clientcard .cc-meta{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+.clientcard .cc-projects{margin-top:8px;font-size:12px;}
+
+/* FORM COMMON */
+.formbtn, .primary-btn{
+  background:var(--gold);color:var(--backstage);border:none;
+  padding:9px 18px;border-radius:5px;font-weight:700;cursor:pointer;font-size:13px;
+}
+.ghost-btn{
+  background:none;border:1px solid rgba(43,36,30,0.3);color:var(--ink);
+  padding:7px 14px;border-radius:5px;cursor:pointer;font-size:12px;
+}
+.overlay .modal .ghost-btn{color:var(--ink);}
+#taskOverlay .ghost-btn, #clientOverlay .ghost-btn{color:var(--cream-text);border-color:rgba(239,230,211,0.4);background:var(--panel);}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.toolbar h2{font-family:'Abril Fatface',serif;color:var(--gold);margin:0;font-size:22px;}
+
+/* MODAL */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  align-items:center;justify-content:center;z-index:50;padding:20px;
+}
+.overlay.show{display:flex;}
+.modal{
+  background:var(--paper);color:var(--ink);border-radius:6px;
+  max-width:520px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;
+}
+.modal.wide{max-width:740px;}
+.modal h3{font-family:'Abril Fatface',serif;color:var(--oxblood);margin-top:0;}
+.modal label{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);margin:12px 0 4px;text-transform:uppercase;letter-spacing:0.4px;}
+.modal input, .modal select, .modal textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;
+  font-family:'Inter',sans-serif;font-size:14px;background:#fff;color:var(--ink);
+}
+.modal textarea{resize:vertical;min-height:50px;}
+.modal-actions{display:flex;justify-content:space-between;margin-top:20px;gap:10px;flex-wrap:wrap;}
+.stage-controls{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+.stage-controls select{flex:1;}
+.small{font-size:11px;color:var(--ink-soft);}
+.danger{color:var(--oxblood);cursor:pointer;font-size:13px;text-decoration:underline;}
+.empty{opacity:0.5;font-style:italic;padding:20px 0;}
+.row2{display:flex;gap:10px;}
+.row2 > div{flex:1;}
+
+/* dynamic sub-sections */
+.subsection{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);}
+.fabcard{background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;}
+.fabcard-head{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+.fabcard-head input{flex:2;margin:0;}
+.fabcard-head select{flex:1;margin:0;}
+.fabcard-row{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap;}
+.fabcard-row label{margin:0;text-transform:none;font-weight:400;font-size:12px;display:flex;align-items:center;gap:6px;color:var(--ink);}
+.fabcard-row input[type=date], .fabcard-row input[type=number]{width:auto;flex:0 0 140px;margin:0;padding:5px 8px;font-size:12px;}
+.purchtable{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px;}
+.purchtable th{background:var(--paper-dim);padding:4px;text-align:left;}
+.purchtable td{padding:3px;border-bottom:1px solid var(--paper-dim);}
+.purchtable input{width:100%;padding:3px 4px;font-size:11px;margin:0;border:1px solid var(--line);border-radius:3px;}
+.purchtable input[type=checkbox]{width:auto;}
+.purchflag{font-size:10px;font-weight:700;margin-top:4px;display:inline-block;}
+.purchflag.done{color:var(--teal);}
+.purchflag.pending{color:var(--oxblood);}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>The Callboard</h1>
+    <div class="sub">FILM · LONG FORM · LIVE SHOWS · CORPORATE · EVENTS · RETAIL</div>
+  </div>
+  <div class="sub" id="todaydate"></div>
+</header>
+
+<nav>
+  <button class="active" data-tab="board">Board</button>
+  <button data-tab="tasks">Tasks</button>
+  <button data-tab="clients">Clients</button>
+</nav>
+
+<main>
+  <div class="tab active" id="tab-board">
+    <div class="toolbar">
+      <h2>Production Pipeline</h2>
+      <button class="primary-btn" onclick="openProjectModal()">+ New Project</button>
+    </div>
+    <div class="board" id="boardEl"></div>
+
+    <div class="toolbar" style="margin-top:28px;">
+      <h2>Events Setup Pipeline</h2>
+    </div>
+    <div class="board" id="boardEl2"></div>
+  </div>
+
+  <div class="tab" id="tab-tasks">
+    <div class="toolbar">
+      <h2>My Tasks</h2>
+      <button class="primary-btn" onclick="openTaskModal()">+ New Task</button>
+    </div>
+    <div class="tasklist" id="taskListEl"></div>
+  </div>
+
+  <div class="tab" id="tab-clients">
+    <div class="toolbar">
+      <h2>Clients</h2>
+      <button class="primary-btn" onclick="openClientModal()">+ New Client</button>
+    </div>
+    <div class="clientgrid" id="clientGridEl"></div>
+  </div>
+</main>
+
+<!-- PROJECT MODAL -->
+<div class="overlay" id="projectOverlay">
+  <div class="modal wide">
+    <h3 id="projTitle">New Project</h3>
+    <input type="hidden" id="projId">
+    <label>Client</label>
+    <select id="projClient"></select>
+    <label>Project / Show Name</label>
+    <input id="projName" placeholder="e.g. KungFuLand Corporate Film">
+
+    <div class="row2">
+      <div>
+        <label>Category</label>
+        <select id="projCategory" onchange="onCategoryChange()"></select>
+      </div>
+      <div id="subcatWrap">
+        <label>Subcategory</label>
+        <select id="projSubcategory" onchange="renderDynamicSection()"></select>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label>Shoot / Show Period — Start</label>
+        <input type="date" id="projShootStart" onchange="renderDynamicSection()">
+      </div>
+      <div>
+        <label>End (optional, if multi-day)</label>
+        <input type="date" id="projShootEnd">
+      </div>
+    </div>
+
+    <label>Notes</label>
+    <textarea id="projNotes" placeholder="Requirements, artist count, etc."></textarea>
+
+    <div id="dynamicSection"></div>
+
+    <div class="stage-controls" id="stageControlsWrap" style="display:none;">
+      <label style="margin:0;">Stage</label>
+      <select id="projStage"></select>
+    </div>
+
+    <div class="modal-actions">
+      <span class="danger" id="deleteProjBtn" onclick="deleteProject()" style="display:none;">Delete project</span>
+      <div style="display:flex;gap:8px;">
+        <button class="ghost-btn" onclick="closeModal('projectOverlay')">Close</button>
+        <button class="formbtn" onclick="saveProject()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="overlay" id="taskOverlay">
+  <div class="modal">
+    <h3>New Task</h3>
+    <input type="hidden" id="taskId">
+    <label>Title</label>
+    <input id="taskTitle" placeholder="e.g. Call Kenneth to confirm dates">
+    <label>Due Date</label>
+    <input type="date" id="taskDue">
+    <label>Linked Project (optional)</label>
+    <select id="taskProject"><option value="">— none —</option></select>
+    <div class="modal-actions">
+      <span></span>
+      <div style="display:flex;gap:8px;">
+        <button class="ghost-btn" onclick="closeModal('taskOverlay')">Cancel</button>
+        <button class="formbtn" onclick="saveTask()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT MODAL -->
+<div class="overlay" id="clientOverlay">
+  <div class="modal">
+    <h3 id="clientTitle">New Client</h3>
+    <input type="hidden" id="clientId">
+    <label>Client / Company Name</label>
+    <input id="clientName" placeholder="e.g. Adjacent Media Pte. Ltd.">
+    <label>Contact Person</label>
+    <input id="clientContact">
+    <label>Email</label>
+    <input id="clientEmail">
+    <label>Phone</label>
+    <input id="clientPhone">
+    <label>Notes</label>
+    <textarea id="clientNotes"></textarea>
+    <div id="clientProjectsList" class="small" style="margin-top:14px;"></div>
+    <div class="modal-actions">
+      <span class="danger" id="deleteClientBtn" onclick="deleteClient()" style="display:none;">Delete client</span>
+      <div style="display:flex;gap:8px;">
+        <button class="ghost-btn" onclick="closeModal('clientOverlay')">Cancel</button>
+        <button class="formbtn" onclick="saveClient()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ CONFIG ============ */
+const CATEGORY_TREE = {
+  "Film": ["SFX","Beauty","Both"],
+  "Long Form": ["SFX","Beauty","Both"],
+  "Live Shows": ["SFX","Beauty","Both"],
+  "Corporate": ["Photoshoot","Video Shoot"],
+  "Events Setup": [],
+  "Retail": ["Booths","Events"]
+};
+const CATEGORY_COLORS = {
+  "Film":"var(--rose)", "Long Form":"var(--longform)", "Live Shows":"var(--teal)",
+  "Corporate":"var(--corpblue)", "Events Setup":"var(--eventscat)", "Retail":"var(--retail)"
+};
+const DEFAULT_STAGES = ["Enquiry","Requirements & Deck","Quotation","Pre-Production","Booking & Scheduling","Ongoing / Filming","Invoicing","Paid"];
+const EVENTS_STAGES = ["Concept Sent","Concept Approved","Design & Setup Sent","Design Approved","Purchasing","On-site Setup","Event Day","Teardown","Disposal"];
+
+// assumption constants — flagged to the user, adjust here if their real lead times differ
+const LEAD_DAYS = 7;        // "1 week before" test date / shoot date
+const PURCHASE_BUFFER = 3;  // purchase task due this many days before the fabrication deadline it feeds
+
+function stagesFor(cat){ return cat==='Events Setup' ? EVENTS_STAGES : DEFAULT_STAGES; }
+function needsFabSection(cat,sub){ return ["Film","Long Form","Live Shows"].includes(cat) && (sub==='SFX'||sub==='Both'); }
+function needsWigSection(cat,sub){ return ["Film","Long Form","Live Shows"].includes(cat) && (sub==='Beauty'||sub==='Both'); }
+function categoryColor(cat){ return CATEGORY_COLORS[cat] || 'var(--rose)'; }
+
+function addDays(dateStr, delta){
+  if(!dateStr) return '';
+  const d = new Date(dateStr+'T00:00:00');
+  d.setDate(d.getDate()+delta);
+  return d.toISOString().slice(0,10);
+}
+
+/* ============ STATE ============ */
+let state = { projects: [], tasks: [], clients: [] };
+let editingProjectId = null;
+let editingClientId = null;
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function getProject(id){ return state.projects.find(p=>p.id===id); }
+
+async function storageGet(key){
+  if(window.storage){
+    try{ const r = await window.storage.get(key); return r ? r.value : null; }catch(e){ return null; }
+  }
+  try{ return localStorage.getItem('callboard_'+key); }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  if(window.storage){
+    try{ await window.storage.set(key, value); return; }catch(e){ /* fall through */ }
+  }
+  try{ localStorage.setItem('callboard_'+key, value); }catch(e){ console.error('save failed', key, e); }
+}
+
+async function loadState(){
+  try{ const v = await storageGet('projects'); state.projects = v ? JSON.parse(v) : []; }catch(e){ state.projects = []; }
+  try{ const v = await storageGet('tasks'); state.tasks = v ? JSON.parse(v) : []; }catch(e){ state.tasks = []; }
+  try{ const v = await storageGet('clients'); state.clients = v ? JSON.parse(v) : []; }catch(e){ state.clients = []; }
+  state.projects.forEach(migrateProject);
+  renderAll();
+}
+async function save(key){
+  await storageSet(key, JSON.stringify(state[key]));
+}
+
+// upgrade projects saved under the old schema (Beauty/SFX/Retail category, single date, sfxChecklist etc.)
+function migrateProject(p){
+  const validCats = Object.keys(CATEGORY_TREE);
+  if(!validCats.includes(p.category)){
+    const old = p.category;
+    if(old==='SFX'){ p.category='Film'; p.subcategory='SFX'; }
+    else if(old==='Beauty'){ p.category='Film'; p.subcategory='Beauty'; }
+    else if(old==='Retail'){ p.category='Retail'; p.subcategory='Booths'; }
+    else { p.category='Film'; p.subcategory='Beauty'; }
+  }
+  if(p.subcategory===undefined) p.subcategory = (CATEGORY_TREE[p.category]||[])[0] || '';
+  if(!p.shootStart){ p.shootStart = p.date || ''; p.shootEnd = p.date || ''; }
+  if(!p.fabItems) p.fabItems = [];
+  if(!p.wigItems) p.wigItems = [];
+  if(!p.setupItems) p.setupItems = [];
+  return p;
+}
+
+document.getElementById('todaydate').textContent = new Date().toLocaleDateString('en-SG',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+// ---------- NAV ----------
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============ RENDER: BOARD / TASKS / CLIENTS ============ */
+function renderAll(){ renderBoard(); renderTasks(); renderClients(); }
+
+function clientName(id){ const c = state.clients.find(c=>c.id===id); return c ? c.name : '—'; }
+
+function fabWigTaskProgress(p){
+  const linked = state.tasks.filter(t=>t.projectId===p.id && t.autoGen);
+  return { done: linked.filter(t=>t.done).length, total: linked.length };
+}
+
+function renderBoardFor(containerId, stages, filterFn){
+  const board = document.getElementById(containerId);
+  board.innerHTML = '';
+  stages.forEach((stage, idx)=>{
+    const col = document.createElement('div');
+    col.className='col';
+    const projs = state.projects.filter(p=>filterFn(p) && p.stage===idx);
+    col.innerHTML = `<h3>${stage} <span class="count">${projs.length}</span></h3>`;
+    if(projs.length===0){
+      const e = document.createElement('div');
+      e.className='empty'; e.textContent='—'; e.style.fontSize='11px';
+      col.appendChild(e);
+    }
+    projs.forEach(p=>{
+      const card = document.createElement('div');
+      card.className='card';
+      card.onclick = ()=>openProjectModal(p.id);
+      const itemCount = (p.fabItems||[]).length + (p.wigItems||[]).length;
+      let progHtml = '';
+      if(itemCount>0){
+        const prog = fabWigTaskProgress(p);
+        progHtml = `<div class="sfxprog">${itemCount} item${itemCount!==1?'s':''}${prog.total? ` — tasks ${prog.done}/${prog.total}`:''}</div>`;
+      }
+      const period = p.shootStart ? (p.shootEnd && p.shootEnd!==p.shootStart ? `${p.shootStart} → ${p.shootEnd}` : p.shootStart) : '';
+      card.innerHTML = `
+        <div class="tape" style="background:${categoryColor(p.category)}"></div>
+        <span class="badge" style="background:${categoryColor(p.category)}">${p.category}${p.subcategory? ' · '+p.subcategory:''}</span>
+        <div class="cname">${p.name}</div>
+        <div class="cclient">${clientName(p.clientId)}</div>
+        ${period ? `<div class="date">${period}</div>` : ''}
+        ${progHtml}
+      `;
+      col.appendChild(card);
+    });
+    board.appendChild(col);
+  });
+}
+function renderBoard(){
+  renderBoardFor('boardEl', DEFAULT_STAGES, p=>p.category!=='Events Setup');
+  renderBoardFor('boardEl2', EVENTS_STAGES, p=>p.category==='Events Setup');
+}
+
+function renderTasks(){
+  const list = document.getElementById('taskListEl');
+  list.innerHTML='';
+  const sorted = [...state.tasks].sort((a,b)=>{
+    if(a.done!==b.done) return a.done? 1: -1;
+    return (a.due||'9999').localeCompare(b.due||'9999');
+  });
+  if(sorted.length===0){ list.innerHTML = '<div class="empty">No tasks yet — add one to get started.</div>'; return; }
+  sorted.forEach(t=>{
+    const row = document.createElement('div');
+    row.className = 'taskrow' + (t.done ? ' done':'');
+    const proj = state.projects.find(p=>p.id===t.projectId);
+    row.innerHTML = `
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
+      <div class="ttitle">${t.title}${proj ? ` <span class="small">— ${proj.name}</span>` : ''}</div>
+      <div class="tmeta">${t.due || 'no date'}</div>
+      <div class="tdel" onclick="deleteTask('${t.id}')">✕</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function renderClients(){
+  const grid = document.getElementById('clientGridEl');
+  grid.innerHTML='';
+  if(state.clients.length===0){ grid.innerHTML = '<div class="empty">No clients yet — add one to get started.</div>'; return; }
+  state.clients.forEach(c=>{
+    const card = document.createElement('div');
+    card.className='clientcard';
+    card.onclick = ()=>openClientModal(c.id);
+    const projs = state.projects.filter(p=>p.clientId===c.id);
+    card.innerHTML = `
+      <h4>${c.name}</h4>
+      <div class="cc-meta">${c.contact||''} ${c.email? '· '+c.email:''}</div>
+      <div class="cc-projects">${projs.length} project${projs.length!==1?'s':''}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* ============ PROJECT MODAL: base fields ============ */
+function refreshClientDropdown(){
+  const sel = document.getElementById('projClient');
+  sel.innerHTML = state.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('') || '<option value="">Add a client first</option>';
+}
+function populateCategoryDropdown(){
+  document.getElementById('projCategory').innerHTML = Object.keys(CATEGORY_TREE).map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function populateSubcategoryDropdown(cat, selected){
+  const opts = CATEGORY_TREE[cat] || [];
+  const wrap = document.getElementById('subcatWrap');
+  if(opts.length===0){ wrap.style.display='none'; document.getElementById('projSubcategory').innerHTML=''; return; }
+  wrap.style.display='block';
+  document.getElementById('projSubcategory').innerHTML = opts.map(o=>`<option value="${o}" ${o===selected?'selected':''}>${o}</option>`).join('');
+}
+function refreshStageDropdown(cat, selectedIdx){
+  const stages = stagesFor(cat);
+  document.getElementById('projStage').innerHTML = stages.map((s,i)=>`<option value="${i}">${s}</option>`).join('');
+  document.getElementById('projStage').value = selectedIdx!=null ? selectedIdx : 0;
+}
+function onCategoryChange(){
+  const cat = document.getElementById('projCategory').value;
+  populateSubcategoryDropdown(cat, null);
+  refreshStageDropdown(cat, 0);
+  renderDynamicSection();
+}
+
+function openProjectModal(id){
+  refreshClientDropdown();
+  populateCategoryDropdown();
+  editingProjectId = id || null;
+  const p = id ? getProject(id) : null;
+  document.getElementById('projTitle').textContent = p ? 'Edit Project' : 'New Project';
+  document.getElementById('projId').value = id || '';
+  document.getElementById('projClient').value = p ? p.clientId : (state.clients[0]?.id||'');
+  document.getElementById('projName').value = p ? p.name : '';
+  const cat = p ? p.category : 'Film';
+  document.getElementById('projCategory').value = cat;
+  populateSubcategoryDropdown(cat, p ? p.subcategory : null);
+  document.getElementById('projShootStart').value = p ? (p.shootStart||'') : '';
+  document.getElementById('projShootEnd').value = p ? (p.shootEnd||'') : '';
+  document.getElementById('projNotes').value = p ? p.notes||'' : '';
+  document.getElementById('stageControlsWrap').style.display = 'flex';
+  refreshStageDropdown(cat, p ? p.stage : 0);
+  document.getElementById('deleteProjBtn').style.display = p ? 'inline' : 'none';
+  renderDynamicSection();
+  document.getElementById('projectOverlay').classList.add('show');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+function saveProjectData(){
+  const name = document.getElementById('projName').value.trim();
+  if(!name){ alert('Give the project a name'); return null; }
+  const clientId = document.getElementById('projClient').value;
+  if(!clientId){ alert('Add a client first (Clients tab)'); return null; }
+  const category = document.getElementById('projCategory').value;
+  const subcategory = document.getElementById('projSubcategory').value || '';
+  const shootStart = document.getElementById('projShootStart').value;
+  const shootEnd = document.getElementById('projShootEnd').value;
+  const notes = document.getElementById('projNotes').value;
+  const stage = parseInt(document.getElementById('projStage').value)||0;
+
+  if(editingProjectId){
+    const p = getProject(editingProjectId);
+    p.clientId=clientId; p.name=name; p.category=category; p.subcategory=subcategory;
+    p.shootStart=shootStart; p.shootEnd=shootEnd; p.notes=notes; p.stage=stage;
+  } else {
+    const newId = uid();
+    state.projects.push({
+      id:newId, clientId, name, category, subcategory, shootStart, shootEnd, notes, stage:0,
+      fabItems:[], wigItems:[], setupItems:[]
+    });
+    editingProjectId = newId;
+  }
+  save('projects');
+  return editingProjectId;
+}
+function saveProject(){
+  const id = saveProjectData();
+  if(!id) return;
+  closeModal('projectOverlay'); renderAll();
+}
+function deleteProject(){
+  if(!confirm('Delete this project?')) return;
+  state.projects = state.projects.filter(p=>p.id!==editingProjectId);
+  state.tasks = state.tasks.filter(t=>t.projectId!==editingProjectId);
+  save('projects'); save('tasks'); closeModal('projectOverlay'); renderAll();
+}
+
+/* ============ DYNAMIC SECTION ROUTER ============ */
+function renderDynamicSection(){
+  const cat = document.getElementById('projCategory').value;
+  const sub = document.getElementById('projSubcategory').value;
+  const p = editingProjectId ? getProject(editingProjectId) : null;
+  let html = '';
+  if(needsFabSection(cat,sub)) html += renderFabSectionHtml(p);
+  if(needsWigSection(cat,sub)) html += renderWigSectionHtml(p);
+  if(cat==='Events Setup') html += renderSetupSectionHtml(p);
+  if(needsFabSection(cat,sub) || needsWigSection(cat,sub)){
+    html += `<button type="button" class="ghost-btn" style="width:100%;margin-top:10px;" onclick="generateAllTasksForProject(editingProjectId)">⚙ Generate / Refresh Task List</button>
+    <div class="small" style="margin-top:6px;">Deadlines assume ${LEAD_DAYS} days lead before test/shoot dates and a ${PURCHASE_BUFFER}-day purchase buffer — adjust individual due dates in the Tasks tab after generating.</div>`;
+  }
+  document.getElementById('dynamicSection').innerHTML = html;
+}
+
+/* ============ FABRICATION ITEMS (SFX / Costume) ============ */
+function renderFabSectionHtml(p){
+  const items = p ? (p.fabItems||[]) : [];
+  return `<div class="subsection">
+    <label>SFX / Costume Fabrication Items</label>
+    ${items.map(i=>fabItemCardHtml(i)).join('') || '<div class="small">No items yet.</div>'}
+    <button type="button" class="ghost-btn" style="width:100%;margin-top:6px;" onclick="addFabItem()">+ Add Fabrication Item</button>
+  </div>`;
+}
+function fabItemCardHtml(item){
+  const allPurchased = item.needsPurchase && item.purchaseList && item.purchaseList.length>0 && item.purchaseList.every(r=>r.purchased);
+  const purchFlag = !item.needsPurchase ? '' :
+    `<div class="purchflag ${allPurchased?'done':'pending'}">${allPurchased ? '✓ All purchased' : `${(item.purchaseList||[]).filter(r=>r.purchased).length}/${(item.purchaseList||[]).length} purchased`}</div>`;
+  return `<div class="fabcard">
+    <div class="fabcard-head">
+      <input value="${item.name||''}" placeholder="e.g. Neck Prosthetic" onchange="updateItemField('fabItems','${item.id}','name',this.value)">
+      <select onchange="updateItemField('fabItems','${item.id}','kind',this.value)">
+        <option value="SFX" ${item.kind==='SFX'?'selected':''}>SFX</option>
+        <option value="Costume" ${item.kind==='Costume'?'selected':''}>Costume</option>
+      </select>
+      <span class="danger" onclick="removeItem('fabItems','${item.id}')">✕</span>
+    </div>
+    <div class="fabcard-row">
+      <label>Pieces required <input type="number" min="1" value="${item.pieces||1}" onchange="updateItemField('fabItems','${item.id}','pieces',this.value)"></label>
+    </div>
+    <div class="fabcard-row">
+      <label><input type="checkbox" ${item.needsTesting?'checked':''} onchange="updateItemField('fabItems','${item.id}','needsTesting',this.checked)"> Client wants testing</label>
+      ${item.needsTesting? `<label>Test date <input type="date" value="${item.testDate||''}" onchange="updateItemField('fabItems','${item.id}','testDate',this.value)"></label>` : ''}
+    </div>
+    <div class="fabcard-row">
+      <label><input type="checkbox" ${item.needsPurchase?'checked':''} onchange="updateItemField('fabItems','${item.id}','needsPurchase',this.checked)"> Needs purchasing</label>
+    </div>
+    ${item.needsPurchase ? purchaseTableHtml('fabItems', item) + purchFlag : ''}
+  </div>`;
+}
+function addFabItem(){
+  const id = saveProjectData(); if(!id) return;
+  const p = getProject(id);
+  p.fabItems.push({id:uid(), kind:'SFX', name:'', pieces:1, needsTesting:false, testDate:'', needsPurchase:false, purchaseList:[]});
+  save('projects'); renderDynamicSection();
+}
+
+/* ============ WIG ITEMS ============ */
+function renderWigSectionHtml(p){
+  const items = p ? (p.wigItems||[]) : [];
+  return `<div class="subsection">
+    <label>Wigs</label>
+    ${items.map(i=>wigItemCardHtml(i)).join('') || '<div class="small">No wigs yet.</div>'}
+    <button type="button" class="ghost-btn" style="width:100%;margin-top:6px;" onclick="addWigItem()">+ Add Wig</button>
+  </div>`;
+}
+function wigItemCardHtml(item){
+  const needsPurchase = item.kind !== 'Generic-Stock';
+  const allPurchased = needsPurchase && item.purchaseList && item.purchaseList.length>0 && item.purchaseList.every(r=>r.purchased);
+  const purchFlag = !needsPurchase ? '' :
+    `<div class="purchflag ${allPurchased?'done':'pending'}">${allPurchased ? '✓ All purchased/ordered' : `${(item.purchaseList||[]).filter(r=>r.purchased).length}/${(item.purchaseList||[]).length} purchased`}</div>`;
+  return `<div class="fabcard">
+    <div class="fabcard-head">
+      <input value="${item.name||''}" placeholder="e.g. Lead actress wig" onchange="updateItemField('wigItems','${item.id}','name',this.value)">
+      <select onchange="updateItemField('wigItems','${item.id}','kind',this.value)">
+        <option value="Generic-Stock" ${item.kind==='Generic-Stock'?'selected':''}>Generic — in stock</option>
+        <option value="Generic-Buy" ${item.kind==='Generic-Buy'?'selected':''}>Generic — need to buy</option>
+        <option value="Custom" ${item.kind==='Custom'?'selected':''}>Custom order</option>
+      </select>
+      <span class="danger" onclick="removeItem('wigItems','${item.id}')">✕</span>
+    </div>
+    ${item.kind==='Custom' ? `<div class="fabcard-row"><label>Talent measurement session date <input type="date" value="${item.measurementDate||''}" onchange="updateItemField('wigItems','${item.id}','measurementDate',this.value)"></label></div>` : ''}
+    ${needsPurchase ? purchaseTableHtml('wigItems', item) + purchFlag : '<div class="small">Already in stock — no purchase needed.</div>'}
+  </div>`;
+}
+function addWigItem(){
+  const id = saveProjectData(); if(!id) return;
+  const p = getProject(id);
+  p.wigItems.push({id:uid(), name:'', kind:'Generic-Stock', measurementDate:'', purchaseList:[]});
+  save('projects'); renderDynamicSection();
+}
+
+/* ============ SHARED: ITEM FIELD + PURCHASE TABLE ============ */
+function updateItemField(collection, itemId, field, value){
+  const p = getProject(editingProjectId); if(!p) return;
+  const item = p[collection].find(i=>i.id===itemId); if(!item) return;
+  if(field==='pieces') value = parseInt(value)||1;
+  item[field] = value;
+  save('projects'); renderDynamicSection();
+}
+function removeItem(collection, itemId){
+  const p = getProject(editingProjectId); if(!p) return;
+  p[collection] = p[collection].filter(i=>i.id!==itemId);
+  state.tasks = state.tasks.filter(t=>!(t.projectId===editingProjectId && t.autoGen && t.sourceId===itemId));
+  save('projects'); save('tasks'); renderDynamicSection();
+}
+function purchaseTableHtml(collection, item){
+  const rows = item.purchaseList||[];
+  return `<table class="purchtable"><thead><tr><th>Item</th><th>Qty</th><th>Budget</th><th>Actual</th><th>Link</th><th>✓</th><th></th></tr></thead><tbody>
+    ${rows.map(r=>`<tr>
+      <td><input value="${r.item||''}" onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','item',this.value)"></td>
+      <td><input type="number" value="${r.qty||1}" onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','qty',this.value)"></td>
+      <td><input type="number" value="${r.budget||0}" onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','budget',this.value)"></td>
+      <td><input type="number" value="${r.actualCost||0}" onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','actualCost',this.value)"></td>
+      <td><input value="${r.link||''}" onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','link',this.value)"></td>
+      <td><input type="checkbox" ${r.purchased?'checked':''} onchange="updatePurchaseRow('${collection}','${item.id}','${r.id}','purchased',this.checked)"></td>
+      <td><span class="danger" onclick="removePurchaseRow('${collection}','${item.id}','${r.id}')">✕</span></td>
+    </tr>`).join('')}
+  </tbody></table>
+  <button type="button" class="ghost-btn" style="margin-top:4px;" onclick="addPurchaseRow('${collection}','${item.id}')">+ Add item to research/buy</button>`;
+}
+function addPurchaseRow(collection, itemId){
+  const p = getProject(editingProjectId); const item = p[collection].find(i=>i.id===itemId);
+  item.purchaseList.push({id:uid(), item:'', qty:1, budget:0, actualCost:0, link:'', purchased:false});
+  save('projects'); renderDynamicSection();
+}
+function updatePurchaseRow(collection, itemId, rowId, field, value){
+  const p = getProject(editingProjectId); const item = p[collection].find(i=>i.id===itemId);
+  const row = item.purchaseList.find(r=>r.id===rowId);
+  if(['qty','budget','actualCost'].includes(field)) value = parseFloat(value)||0;
+  row[field] = value;
+  save('projects'); renderDynamicSection();
+}
+function removePurchaseRow(collection, itemId, rowId){
+  const p = getProject(editingProjectId); const item = p[collection].find(i=>i.id===itemId);
+  item.purchaseList = item.purchaseList.filter(r=>r.id!==rowId);
+  save('projects'); renderDynamicSection();
+}
+
+/* ============ EVENTS SETUP ITEMS ============ */
+function renderSetupSectionHtml(p){
+  const items = p ? (p.setupItems||[]) : [];
+  let html = `<div class="subsection"><label>Setup Items</label>`;
+  items.forEach(mi=>{
+    html += `<div class="fabcard">
+      <div class="fabcard-head">
+        <input value="${mi.name||''}" placeholder="e.g. Photo Op" onchange="updateSetupField('${mi.id}','name',this.value)">
+        <span class="danger" onclick="removeSetupItem('${mi.id}')">✕</span>
+      </div>
+      <div class="small">Sub-list items — type freely, no fixed list:</div>
+      <table class="purchtable"><thead><tr><th>Item</th><th>Qty</th><th></th></tr></thead><tbody>
+      ${(mi.sublist||[]).map(s=>`<tr>
+        <td><input value="${s.name||''}" onchange="updateSublistField('${mi.id}','${s.id}','name',this.value)"></td>
+        <td><input type="number" value="${s.qty||1}" onchange="updateSublistField('${mi.id}','${s.id}','qty',this.value)"></td>
+        <td><span class="danger" onclick="removeSublistItem('${mi.id}','${s.id}')">✕</span></td>
+      </tr>`).join('')}
+      </tbody></table>
+      <button type="button" class="ghost-btn" style="margin-top:4px;" onclick="addSublistItem('${mi.id}')">+ Add sub-item</button>
+    </div>`;
+  });
+  html += `<button type="button" class="ghost-btn" style="width:100%;margin-top:6px;" onclick="addSetupItem()">+ Add Setup Item</button>`;
+
+  if(items.length){
+    const agg = {};
+    items.forEach(mi=>(mi.sublist||[]).forEach(s=>{
+      if(!s.name) return;
+      const key = s.name.trim().toLowerCase();
+      agg[key] = agg[key] || {name:s.name.trim(), qty:0};
+      agg[key].qty += (parseFloat(s.qty)||0);
+    }));
+    const rows = Object.values(agg);
+    if(rows.length){
+      html += `<div class="small" style="margin-top:12px;font-weight:600;">Combined Purchase List (auto-calculated across all setup items in this project)</div>
+      <table class="purchtable"><thead><tr><th>Item</th><th>Total Qty Needed</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${r.name}</td><td>${r.qty}</td></tr>`).join('')}
+      </tbody></table>`;
+    }
+  }
+  html += `</div>`;
+  return html;
+}
+function addSetupItem(){
+  const id = saveProjectData(); if(!id) return;
+  const p = getProject(id);
+  p.setupItems.push({id:uid(), name:'', sublist:[]});
+  save('projects'); renderDynamicSection();
+}
+function updateSetupField(mid, field, value){
+  const p = getProject(editingProjectId); const mi = p.setupItems.find(i=>i.id===mid);
+  mi[field] = value; save('projects'); renderDynamicSection();
+}
+function removeSetupItem(mid){
+  const p = getProject(editingProjectId); p.setupItems = p.setupItems.filter(i=>i.id!==mid);
+  save('projects'); renderDynamicSection();
+}
+function addSublistItem(mid){
+  const p = getProject(editingProjectId); const mi = p.setupItems.find(i=>i.id===mid);
+  mi.sublist.push({id:uid(), name:'', qty:1});
+  save('projects'); renderDynamicSection();
+}
+function updateSublistField(mid, sid, field, value){
+  const p = getProject(editingProjectId); const mi = p.setupItems.find(i=>i.id===mid);
+  const s = mi.sublist.find(x=>x.id===sid);
+  if(field==='qty') value = parseFloat(value)||0;
+  s[field] = value; save('projects'); renderDynamicSection();
+}
+function removeSublistItem(mid, sid){
+  const p = getProject(editingProjectId); const mi = p.setupItems.find(i=>i.id===mid);
+  mi.sublist = mi.sublist.filter(x=>x.id!==sid);
+  save('projects'); renderDynamicSection();
+}
+
+/* ============ TASK AUTO-GENERATION ============ */
+function buildFabTasks(p, item){
+  const tasks = [];
+  if(!item.name) return tasks;
+  const fabDeadline = addDays(p.shootStart, -LEAD_DAYS);
+  if(item.needsTesting && item.testDate){
+    const testPrepDeadline = addDays(item.testDate, -LEAD_DAYS);
+    if(item.needsPurchase) tasks.push({title:`Purchase materials – ${item.name}`, due:addDays(testPrepDeadline,-PURCHASE_BUFFER)});
+    tasks.push({title:`Fabricate test piece – ${item.name} (1 pc)`, due:testPrepDeadline});
+    tasks.push({title:`Internal test check – ${item.name}`, due:testPrepDeadline});
+    tasks.push({title:`Client testing – ${item.name}`, due:item.testDate});
+    tasks.push({title:`Fabricate remaining pieces – ${item.name} (x${item.pieces})`, due:fabDeadline});
+  } else {
+    if(item.needsPurchase) tasks.push({title:`Purchase materials – ${item.name}`, due:addDays(fabDeadline,-PURCHASE_BUFFER)});
+    tasks.push({title:`Fabricate ${item.name} (x${item.pieces})`, due:fabDeadline});
+  }
+  return tasks;
+}
+function buildWigTasks(p, item){
+  const tasks = [];
+  if(!item.name) return tasks;
+  const fabDeadline = addDays(p.shootStart, -LEAD_DAYS);
+  if(item.kind==='Custom'){
+    tasks.push({title:`Book & conduct measurement session – ${item.name}`, due:item.measurementDate||''});
+    tasks.push({title:`Send measurements to wig maker – ${item.name}`, due:item.measurementDate?addDays(item.measurementDate,2):''});
+    tasks.push({title:`Order custom wig – ${item.name}`, due:addDays(fabDeadline,-PURCHASE_BUFFER)});
+    tasks.push({title:`Receive & style custom wig – ${item.name}`, due:fabDeadline});
+  } else if(item.kind==='Generic-Buy'){
+    tasks.push({title:`Purchase wig – ${item.name}`, due:addDays(fabDeadline,-PURCHASE_BUFFER)});
+    tasks.push({title:`Style & prep wig – ${item.name}`, due:fabDeadline});
+  } else {
+    tasks.push({title:`Prep in-stock wig – ${item.name}`, due:fabDeadline});
+  }
+  return tasks;
+}
+function generateAllTasksForProject(id){
+  const p = getProject(id); if(!p) return;
+  if(!p.shootStart){ alert('Set a shoot/show start date first — task deadlines are calculated from it.'); return; }
+  state.tasks = state.tasks.filter(t=>!(t.projectId===id && t.autoGen));
+  let count = 0;
+  (p.fabItems||[]).forEach(item=>{
+    buildFabTasks(p,item).forEach(t=>{ state.tasks.push({id:uid(), projectId:id, autoGen:true, sourceId:item.id, done:false, ...t}); count++; });
+  });
+  (p.wigItems||[]).forEach(item=>{
+    buildWigTasks(p,item).forEach(t=>{ state.tasks.push({id:uid(), projectId:id, autoGen:true, sourceId:item.id, done:false, ...t}); count++; });
+  });
+  save('tasks'); renderAll();
+  alert(`Generated ${count} tasks in the Tasks tab.`);
+}
+
+/* ============ TASK MODAL ============ */
+function openTaskModal(){
+  document.getElementById('taskId').value='';
+  document.getElementById('taskTitle').value='';
+  document.getElementById('taskDue').value='';
+  const sel = document.getElementById('taskProject');
+  sel.innerHTML = '<option value="">— none —</option>' + state.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('taskOverlay').classList.add('show');
+}
+function saveTask(){
+  const title = document.getElementById('taskTitle').value.trim();
+  if(!title){ alert('Give the task a title'); return; }
+  state.tasks.push({
+    id: uid(), title,
+    due: document.getElementById('taskDue').value,
+    projectId: document.getElementById('taskProject').value || null,
+    done:false
+  });
+  save('tasks'); closeModal('taskOverlay'); renderAll();
+}
+function toggleTask(id){ const t = state.tasks.find(x=>x.id===id); t.done = !t.done; save('tasks'); renderTasks(); }
+function deleteTask(id){ state.tasks = state.tasks.filter(x=>x.id!==id); save('tasks'); renderTasks(); }
+
+/* ============ CLIENT MODAL ============ */
+function openClientModal(id){
+  editingClientId = id || null;
+  const c = id ? state.clients.find(x=>x.id===id) : null;
+  document.getElementById('clientTitle').textContent = c ? 'Edit Client' : 'New Client';
+  document.getElementById('clientId').value = id || '';
+  document.getElementById('clientName').value = c ? c.name : '';
+  document.getElementById('clientContact').value = c ? c.contact||'' : '';
+  document.getElementById('clientEmail').value = c ? c.email||'' : '';
+  document.getElementById('clientPhone').value = c ? c.phone||'' : '';
+  document.getElementById('clientNotes').value = c ? c.notes||'' : '';
+  document.getElementById('deleteClientBtn').style.display = c ? 'inline':'none';
+  const projList = document.getElementById('clientProjectsList');
+  if(c){
+    const projs = state.projects.filter(p=>p.clientId===c.id);
+    projList.innerHTML = projs.length ? ('Projects: ' + projs.map(p=>p.name).join(', ')) : 'No projects yet.';
+  } else { projList.innerHTML=''; }
+  document.getElementById('clientOverlay').classList.add('show');
+}
+function saveClient(){
+  const name = document.getElementById('clientName').value.trim();
+  if(!name){ alert('Give the client a name'); return; }
+  if(editingClientId){
+    const c = state.clients.find(x=>x.id===editingClientId);
+    c.name=name; c.contact=document.getElementById('clientContact').value;
+    c.email=document.getElementById('clientEmail').value;
+    c.phone=document.getElementById('clientPhone').value;
+    c.notes=document.getElementById('clientNotes').value;
+  } else {
+    state.clients.push({
+      id: uid(), name,
+      contact: document.getElementById('clientContact').value,
+      email: document.getElementById('clientEmail').value,
+      phone: document.getElementById('clientPhone').value,
+      notes: document.getElementById('clientNotes').value
+    });
+  }
+  save('clients'); closeModal('clientOverlay'); renderAll();
+}
+function deleteClient(){
+  if(!confirm('Delete this client? Their projects will stay but show as unassigned.')) return;
+  state.clients = state.clients.filter(c=>c.id!==editingClientId);
+  save('clients'); closeModal('clientOverlay'); renderAll();
+}
+
+loadState();
+</script>
+</body>
+</html>
