@@ -26,6 +26,9 @@
   --cream-text:#F5F1EC;
 }
 *{box-sizing:border-box;}
+body.locked > header, body.locked > nav, body.locked > main{display:none;}
+.lock-modal{max-width:340px;text-align:center;}
+.lock-modal input{margin-bottom:12px;}
 body{
   margin:0;
   background:var(--backstage);
@@ -306,7 +309,17 @@ body::before{
 .cmdk-item .ci-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.6;}
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="overlay show" id="lockOverlay" style="z-index:200;">
+  <div class="modal lock-modal">
+    <h3>The Callboard</h3>
+    <p class="small">Enter the team passcode to continue.</p>
+    <input type="password" id="lockPasscode" placeholder="Passcode" onkeydown="if(event.key==='Enter')checkPasscode()">
+    <button class="formbtn" style="width:100%;" onclick="checkPasscode()">Enter</button>
+    <div class="small" id="lockError" style="color:var(--oxblood);margin-top:8px;"></div>
+  </div>
+</div>
 
 <header>
   <div>
@@ -314,7 +327,10 @@ body::before{
     <div class="tagline">Crafting Faces. Creating Stories.</div>
     <div class="sub">THE ARTISTS INC — FILM · LONG FORM · LIVE SHOWS · CORPORATE · EVENTS · RETAIL</div>
   </div>
-  <div class="sub" id="todaydate"></div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <button class="ghost-btn" style="color:var(--cream-text);border-color:rgba(239,230,211,0.4);" onclick="loadState()">↻ Refresh shared data</button>
+    <div class="sub" id="todaydate"></div>
+  </div>
 </header>
 
 <nav>
@@ -512,7 +528,42 @@ body::before{
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+/* ============ SHARED BACKEND CONFIG ============ */
+/* Paste your Firebase config object from the Firebase console here: */
+const firebaseConfig = {
+  apiKey: "AIzaSyB-2tTRZE5SYZaCU7qeRVpzxAiWr7iqaGo",
+  authDomain: "taiprojects-c47c6.firebaseapp.com",
+  projectId: "taiprojects-c47c6",
+  storageBucket: "taiprojects-c47c6.firebasestorage.app",
+  messagingSenderId: "810588749735",
+  appId: "1:810588749735:web:62c7f8b0cfcd08023f8082"
+};
+/* Set the passcode your team will use to open the app: */
+const SHARED_PASSCODE = "TAI";
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const SHARED_DOC = db.collection('callboard').doc('shared');
+
+/* ============ PASSCODE LOCK ============ */
+function checkPasscode(){
+  const val = document.getElementById('lockPasscode').value;
+  if(val === SHARED_PASSCODE){
+    sessionStorage.setItem('callboard_unlocked','1');
+    unlockApp();
+  } else {
+    document.getElementById('lockError').textContent = 'Wrong passcode — try again.';
+  }
+}
+function unlockApp(){
+  document.getElementById('lockOverlay').classList.remove('show');
+  document.body.classList.remove('locked');
+  loadState();
+}
+
 /* ============ CONFIG ============ */
 const CATEGORY_TREE = {
   "Film": ["SFX","Beauty","Both"],
@@ -554,16 +605,22 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function getProject(id){ return state.projects.find(p=>p.id===id); }
 
 async function storageGet(key){
-  if(window.storage){
-    try{ const r = await window.storage.get(key); return r ? r.value : null; }catch(e){ return null; }
-  }
+  try{
+    const snap = await SHARED_DOC.get();
+    if(snap.exists){
+      const data = snap.data();
+      if(data[key] !== undefined) return data[key];
+    }
+  }catch(e){ console.error('Firestore load failed', key, e); }
   try{ return localStorage.getItem('callboard_'+key); }catch(e){ return null; }
 }
 async function storageSet(key, value){
-  if(window.storage){
-    try{ await window.storage.set(key, value); return; }catch(e){ /* fall through */ }
+  try{
+    await SHARED_DOC.set({[key]: value}, {merge:true});
+  }catch(e){
+    console.error('Firestore save failed', key, e);
   }
-  try{ localStorage.setItem('callboard_'+key, value); }catch(e){ console.error('save failed', key, e); }
+  try{ localStorage.setItem('callboard_'+key, value); }catch(e){ /* ignore */ }
 }
 
 const DEFAULT_CLIENTS = ["Adjacent Media","Dropkick","Zhao Wei Films","Strawberry Inc","Emoumie"];
@@ -1507,7 +1564,7 @@ document.addEventListener('keydown', e=>{
 document.getElementById('cmdkInput').addEventListener('input', e=>renderCmdkResults(e.target.value));
 document.getElementById('cmdkOverlay').addEventListener('click', e=>{ if(e.target.id==='cmdkOverlay') closeCmdk(); });
 
-loadState();
+if(sessionStorage.getItem('callboard_unlocked')==='1'){ unlockApp(); }
 </script>
 </body>
 </html>
