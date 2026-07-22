@@ -4,41 +4,41 @@
 <meta charset="UTF-8">
 <title>The Callboard</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500;1,700&family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 :root{
-  --backstage:#1C1815;
-  --backstage-2:#241F1A;
-  --panel:#2B241E;
-  --paper:#F2E9D8;
-  --paper-dim:#E7DBC2;
-  --ink:#2B241E;
-  --ink-soft:#6B5E4C;
-  --line:#C9B892;
-  --gold:#D4A73D;
+  --backstage:#0D0B0B;
+  --backstage-2:#18100F;
+  --panel:#241315;
+  --paper:#FDFBF7;
+  --paper-dim:#EDE4DC;
+  --ink:#1A1414;
+  --ink-soft:#6b5b5b;
+  --line:#d8cfc9;
+  --gold:#C7383F;
   --rose:#A8496B;
-  --oxblood:#7A2331;
-  --teal:#3E6B64;
+  --oxblood:#5C1220;
+  --teal:#2F6F72;
   --retail:#5C7A4A;
   --longform:#6B4C7A;
   --corpblue:#3E5C7A;
   --eventscat:#8C5E2A;
-  --cream-text:#EFE6D3;
+  --cream-text:#F5F1EC;
 }
 *{box-sizing:border-box;}
 body{
   margin:0;
   background:var(--backstage);
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(212,167,61,0.06), transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(122,35,49,0.08), transparent 45%);
+    linear-gradient(135deg, #0D0B0B 0%, #1A0A0D 55%, #3A0F16 100%);
   font-family:'Inter',sans-serif;
   color:var(--cream-text);
   min-height:100vh;
 }
 header{
-  padding:28px 32px 18px;
+  padding:30px 32px 20px;
   border-bottom:2px solid var(--gold);
+  background:linear-gradient(90deg, rgba(13,11,11,0.9), rgba(74,14,24,0.5));
   display:flex;
   align-items:baseline;
   justify-content:space-between;
@@ -46,16 +46,26 @@ header{
   gap:10px;
 }
 header h1{
-  font-family:'Abril Fatface',serif;
-  font-size:34px;
+  font-family:'Playfair Display', serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:36px;
   margin:0;
-  color:var(--gold);
+  color:var(--cream-text);
   letter-spacing:1px;
 }
-header .sub{
+header .tagline{
+  font-family:'Anton', sans-serif;
   font-size:12px;
+  letter-spacing:1.5px;
+  color:var(--gold);
+  text-transform:uppercase;
+  margin-top:2px;
+}
+header .sub{
+  font-size:11px;
   color:var(--cream-text);
-  opacity:0.65;
+  opacity:0.6;
   font-family:'IBM Plex Mono',monospace;
   letter-spacing:0.5px;
 }
@@ -67,13 +77,14 @@ nav{
 nav button{
   background:var(--panel);
   color:var(--cream-text);
-  border:1px solid rgba(212,167,61,0.25);
+  border:1px solid rgba(139,30,30,0.35);
   border-bottom:none;
   padding:10px 20px;
-  font-family:'Inter',sans-serif;
-  font-weight:600;
+  font-family:'Anton',sans-serif;
+  font-weight:400;
   font-size:13px;
-  letter-spacing:0.4px;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
   cursor:pointer;
   border-radius:8px 8px 0 0;
   opacity:0.6;
@@ -81,8 +92,9 @@ nav button{
 nav button.active{
   background:var(--backstage-2);
   opacity:1;
-  color:var(--gold);
+  color:var(--cream-text);
   border-color:var(--gold);
+  box-shadow:inset 0 -2px 0 var(--gold);
 }
 main{
   padding:20px 32px 60px;
@@ -160,11 +172,23 @@ main{
   border-left:3px solid var(--gold);
 }
 .taskrow.done{opacity:0.4;text-decoration:line-through;border-left-color:var(--teal);}
+.taskrow.overdue{background:rgba(199,56,63,0.22);border-left-color:#C7383F;}
+.taskrow.duesoon{border-left-color:#C7383F;}
+.taskrow.tbc{background:rgba(199,56,63,0.12);}
 .taskrow input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);}
+.taskrow{flex-wrap:wrap;}
 .taskrow .ttitle{flex:1;font-size:14px;}
-.taskrow .tmeta{font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.6;}
+.taskrow .tmeta{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;opacity:0.85;}
+.taskrow.overdue .tmeta, .taskrow.duesoon .tmeta{font-weight:800;color:#C7383F;}
+.taskrow.tbc .tmeta{font-weight:800;text-decoration:underline;}
 .taskrow .tdel{cursor:pointer;opacity:0.5;font-size:14px;}
 .taskrow .tdel:hover{opacity:1;}
+.testctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(239,230,211,0.2);}
+.testctrl button{font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-weight:700;}
+.testctrl button.selected.pass{background:var(--teal);color:#fff;border-color:var(--teal);}
+.testctrl button.selected.fail{background:#C7383F;color:#fff;border-color:#C7383F;}
+.testctrl input[type=date]{width:auto;font-size:11px;padding:3px 6px;}
+.testctrl label{font-size:11px;display:flex;gap:4px;align-items:center;color:var(--cream-text);opacity:0.85;}
 
 /* CLIENTS */
 .clientgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
@@ -172,13 +196,13 @@ main{
   background:var(--paper);color:var(--ink);border-radius:4px;padding:14px;
   box-shadow:0 3px 6px rgba(0,0,0,0.3);cursor:pointer;
 }
-.clientcard h4{margin:0 0 4px;font-family:'Abril Fatface',serif;font-size:18px;color:var(--oxblood);}
+.clientcard h4{margin:0 0 4px;font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:18px;color:var(--oxblood);}
 .clientcard .cc-meta{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
 .clientcard .cc-projects{margin-top:8px;font-size:12px;}
 
 /* FORM COMMON */
 .formbtn, .primary-btn{
-  background:var(--gold);color:var(--backstage);border:none;
+  background:var(--gold);color:#FDFBF7;border:none;
   padding:9px 18px;border-radius:5px;font-weight:700;cursor:pointer;font-size:13px;
 }
 .ghost-btn{
@@ -188,7 +212,7 @@ main{
 .overlay .modal .ghost-btn{color:var(--ink);}
 #taskOverlay .ghost-btn, #clientOverlay .ghost-btn{color:var(--cream-text);border-color:rgba(239,230,211,0.4);background:var(--panel);}
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
-.toolbar h2{font-family:'Abril Fatface',serif;color:var(--gold);margin:0;font-size:22px;}
+.toolbar h2{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;color:var(--gold);margin:0;font-size:22px;}
 
 /* MODAL */
 .overlay{
@@ -201,7 +225,7 @@ main{
   max-width:520px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;
 }
 .modal.wide{max-width:740px;}
-.modal h3{font-family:'Abril Fatface',serif;color:var(--oxblood);margin-top:0;}
+.modal h3{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;color:var(--oxblood);margin-top:0;}
 .modal label{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);margin:12px 0 4px;text-transform:uppercase;letter-spacing:0.4px;}
 .modal input, .modal select, .modal textarea{
   width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;
@@ -234,6 +258,52 @@ main{
 .purchflag{font-size:10px;font-weight:700;margin-top:4px;display:inline-block;}
 .purchflag.done{color:var(--teal);}
 .purchflag.pending{color:var(--oxblood);}
+
+/* film grain texture overlay */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* STUDIO DASHBOARD */
+.stattiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.stattile{
+  background:var(--panel);border:1px solid rgba(199,56,63,0.25);border-radius:8px;padding:14px 16px;
+  transition:transform .15s, box-shadow .15s;
+}
+.stattile:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.4);}
+.stattile .stnum{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--gold);line-height:1;}
+.stattile .stlabel{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.6px;opacity:0.7;margin-top:4px;}
+.studio-grid{display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;}
+.studio-side{background:var(--panel);border-radius:8px;padding:14px;border:1px solid rgba(199,56,63,0.2);}
+.side-h{font-family:'Anton',sans-serif;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--gold);margin:14px 0 8px;border-bottom:1px dashed rgba(199,56,63,0.3);padding-bottom:4px;}
+.side-h:first-child{margin-top:0;}
+.sideitem{font-size:12px;padding:6px 0;border-bottom:1px solid rgba(239,230,211,0.08);}
+.sideitem .si-title{display:block;}
+.sideitem .si-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.6;}
+@media (max-width:900px){ .studio-grid{grid-template-columns:1fr;} }
+
+/* WORKSPACE TABS (inside project modal) */
+.wstabs{display:flex;gap:4px;margin:14px 0 10px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.wstabs button{
+  background:none;border:none;padding:8px 14px;font-family:'Anton',sans-serif;font-size:11px;
+  letter-spacing:0.6px;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;
+}
+.wstabs button.active{color:var(--oxblood);border-bottom-color:var(--oxblood);}
+.wspane{display:none;}
+.wspane.active{display:block;}
+.activityrow{font-size:12px;padding:6px 0;border-bottom:1px dashed var(--line);}
+.activityrow .a-time{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);display:block;}
+
+/* COMMAND PALETTE */
+.cmdk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:100;align-items:flex-start;justify-content:center;padding-top:12vh;}
+.cmdk-overlay.show{display:flex;}
+.cmdk-box{background:var(--paper);color:var(--ink);width:100%;max-width:560px;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.cmdk-box input{width:100%;border:none;padding:16px 18px;font-size:16px;font-family:'Inter',sans-serif;outline:none;border-bottom:1px solid var(--line);}
+.cmdk-results{max-height:50vh;overflow-y:auto;}
+.cmdk-item{padding:10px 18px;cursor:pointer;font-size:13px;display:flex;justify-content:space-between;}
+.cmdk-item:hover, .cmdk-item.sel{background:var(--paper-dim);}
+.cmdk-item .ci-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.6;}
 </style>
 </head>
 <body>
@@ -241,29 +311,46 @@ main{
 <header>
   <div>
     <h1>The Callboard</h1>
-    <div class="sub">FILM · LONG FORM · LIVE SHOWS · CORPORATE · EVENTS · RETAIL</div>
+    <div class="tagline">Crafting Faces. Creating Stories.</div>
+    <div class="sub">THE ARTISTS INC — FILM · LONG FORM · LIVE SHOWS · CORPORATE · EVENTS · RETAIL</div>
   </div>
   <div class="sub" id="todaydate"></div>
 </header>
 
 <nav>
-  <button class="active" data-tab="board">Board</button>
+  <button class="active" data-tab="board">Studio</button>
   <button data-tab="tasks">Tasks</button>
   <button data-tab="clients">Clients</button>
+  <button data-tab="finance">Finance</button>
 </nav>
 
 <main>
   <div class="tab active" id="tab-board">
-    <div class="toolbar">
-      <h2>Production Pipeline</h2>
-      <button class="primary-btn" onclick="openProjectModal()">+ New Project</button>
-    </div>
-    <div class="board" id="boardEl"></div>
+    <div class="stattiles" id="statTiles"></div>
+    <div class="studio-grid">
+      <div class="studio-main">
+        <div class="toolbar">
+          <h2>Production Pipeline</h2>
+          <button class="primary-btn" onclick="openProjectModal()">+ New Production</button>
+        </div>
+        <div class="board" id="boardEl"></div>
 
-    <div class="toolbar" style="margin-top:28px;">
-      <h2>Events Setup Pipeline</h2>
+        <div class="toolbar" style="margin-top:28px;">
+          <h2>Events Setup Pipeline</h2>
+        </div>
+        <div class="board" id="boardEl2"></div>
+      </div>
+      <div class="studio-side">
+        <h3 class="side-h">Today's Shoots</h3>
+        <div id="sideTodayEl"></div>
+        <h3 class="side-h">Upcoming Deadlines</h3>
+        <div id="sideUpcomingEl"></div>
+        <h3 class="side-h">Overdue</h3>
+        <div id="sideOverdueEl"></div>
+        <h3 class="side-h">Since Yesterday</h3>
+        <div id="sideSinceYesterdayEl"></div>
+      </div>
     </div>
-    <div class="board" id="boardEl2"></div>
   </div>
 
   <div class="tab" id="tab-tasks">
@@ -281,52 +368,87 @@ main{
     </div>
     <div class="clientgrid" id="clientGridEl"></div>
   </div>
+
+  <div class="tab" id="tab-finance">
+    <div class="toolbar">
+      <h2>Finance Overview</h2>
+    </div>
+    <div class="small" style="margin-bottom:12px;">Expenses pull automatically from each production's Fabrication &amp; Wigs purchase lists, plus any Other Expenses logged in its Finance tab. Click a row to open that production.</div>
+    <div id="financeTableEl"></div>
+  </div>
 </main>
 
 <!-- PROJECT MODAL -->
 <div class="overlay" id="projectOverlay">
   <div class="modal wide">
-    <h3 id="projTitle">New Project</h3>
+    <h3 id="projTitle">New Production</h3>
     <input type="hidden" id="projId">
-    <label>Client</label>
-    <select id="projClient"></select>
-    <label>Project / Show Name</label>
-    <input id="projName" placeholder="e.g. KungFuLand Corporate Film">
 
-    <div class="row2">
-      <div>
-        <label>Category</label>
-        <select id="projCategory" onchange="onCategoryChange()"></select>
+    <div class="wstabs" id="wsTabs">
+      <button class="active" data-ws="overview" onclick="switchWsTab('overview')">Overview</button>
+      <button data-ws="items" onclick="switchWsTab('items')">Fabrication &amp; Wigs</button>
+      <button data-ws="finance" onclick="switchWsTab('finance')">Finance</button>
+      <button data-ws="activity" onclick="switchWsTab('activity')">Activity Log</button>
+    </div>
+
+    <div class="wspane active" id="ws-overview">
+      <label>Client</label>
+      <select id="projClient"></select>
+      <label>Production / Show Name</label>
+      <input id="projName" placeholder="e.g. KungFuLand Corporate Film">
+
+      <div class="row2">
+        <div>
+          <label>Category</label>
+          <select id="projCategory" onchange="onCategoryChange()"></select>
+        </div>
+        <div id="subcatWrap">
+          <label>Subcategory</label>
+          <select id="projSubcategory" onchange="renderDynamicSection()"></select>
+        </div>
       </div>
-      <div id="subcatWrap">
-        <label>Subcategory</label>
-        <select id="projSubcategory" onchange="renderDynamicSection()"></select>
+
+      <div class="row2">
+        <div>
+          <label>Shoot / Show Period — Start</label>
+          <input type="date" id="projShootStart" onchange="renderDynamicSection()">
+        </div>
+        <div>
+          <label>End (optional, if multi-day)</label>
+          <input type="date" id="projShootEnd">
+        </div>
+      </div>
+
+      <label>Notes</label>
+      <textarea id="projNotes" placeholder="Requirements, artist count, etc."></textarea>
+
+      <div class="stage-controls" id="stageControlsWrap" style="display:none;">
+        <label style="margin:0;">Stage</label>
+        <select id="projStage"></select>
       </div>
     </div>
 
-    <div class="row2">
-      <div>
-        <label>Shoot / Show Period — Start</label>
-        <input type="date" id="projShootStart" onchange="renderDynamicSection()">
-      </div>
-      <div>
-        <label>End (optional, if multi-day)</label>
-        <input type="date" id="projShootEnd">
-      </div>
+    <div class="wspane" id="ws-items">
+      <div id="dynamicSection"></div>
     </div>
 
-    <label>Notes</label>
-    <textarea id="projNotes" placeholder="Requirements, artist count, etc."></textarea>
+    <div class="wspane" id="ws-finance">
+      <div class="row2">
+        <div><label>Quotation Amount (SGD)</label><input type="number" min="0" id="projQuoteAmount" onchange="commitFinanceHeader()"></div>
+        <div><label>Invoice Amount (SGD)</label><input type="number" min="0" id="projInvoiceAmount" onchange="commitFinanceHeader()"></div>
+      </div>
+      <label>Stage-based Payment Status</label>
+      <div class="small" id="paymentStatusDisplay" style="font-size:13px;font-weight:700;margin-top:4px;">—</div>
+      <div class="small" style="margin-top:4px;">This follows the production's Stage (Overview tab). The Payments log below tracks actual money received, which may lag behind the stage.</div>
+      <div id="financeDynamicEl" style="margin-top:6px;"></div>
+    </div>
 
-    <div id="dynamicSection"></div>
-
-    <div class="stage-controls" id="stageControlsWrap" style="display:none;">
-      <label style="margin:0;">Stage</label>
-      <select id="projStage"></select>
+    <div class="wspane" id="ws-activity">
+      <div id="activityLogEl"></div>
     </div>
 
     <div class="modal-actions">
-      <span class="danger" id="deleteProjBtn" onclick="deleteProject()" style="display:none;">Delete project</span>
+      <span class="danger" id="deleteProjBtn" onclick="deleteProject()" style="display:none;">Delete production</span>
       <div style="display:flex;gap:8px;">
         <button class="ghost-btn" onclick="closeModal('projectOverlay')">Close</button>
         <button class="formbtn" onclick="saveProject()">Save</button>
@@ -379,6 +501,14 @@ main{
         <button class="formbtn" onclick="saveClient()">Save</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- COMMAND PALETTE -->
+<div class="cmdk-overlay" id="cmdkOverlay">
+  <div class="cmdk-box">
+    <input id="cmdkInput" placeholder="Search productions, clients... or type: new project / new task / new client">
+    <div class="cmdk-results" id="cmdkResults"></div>
   </div>
 </div>
 
@@ -436,10 +566,15 @@ async function storageSet(key, value){
   try{ localStorage.setItem('callboard_'+key, value); }catch(e){ console.error('save failed', key, e); }
 }
 
+const DEFAULT_CLIENTS = ["Adjacent Media","Dropkick","Zhao Wei Films","Strawberry Inc","Emoumie"];
 async function loadState(){
   try{ const v = await storageGet('projects'); state.projects = v ? JSON.parse(v) : []; }catch(e){ state.projects = []; }
   try{ const v = await storageGet('tasks'); state.tasks = v ? JSON.parse(v) : []; }catch(e){ state.tasks = []; }
   try{ const v = await storageGet('clients'); state.clients = v ? JSON.parse(v) : []; }catch(e){ state.clients = []; }
+  if(state.clients.length===0){
+    state.clients = DEFAULT_CLIENTS.map(name=>({id:uid(), name, contact:'', email:'', phone:'', notes:''}));
+    save('clients');
+  }
   state.projects.forEach(migrateProject);
   renderAll();
 }
@@ -460,8 +595,14 @@ function migrateProject(p){
   if(p.subcategory===undefined) p.subcategory = (CATEGORY_TREE[p.category]||[])[0] || '';
   if(!p.shootStart){ p.shootStart = p.date || ''; p.shootEnd = p.date || ''; }
   if(!p.fabItems) p.fabItems = [];
+  p.fabItems.forEach(i=>{ if(i.needsFabricating===undefined) i.needsFabricating=false; if(!i.components) i.components=[]; });
   if(!p.wigItems) p.wigItems = [];
   if(!p.setupItems) p.setupItems = [];
+  if(p.quoteAmount===undefined) p.quoteAmount = 0;
+  if(p.invoiceAmount===undefined) p.invoiceAmount = 0;
+  if(!p.payments) p.payments = [];
+  if(!p.otherExpenses) p.otherExpenses = [];
+  if(!p.activityLog) p.activityLog = [];
   return p;
 }
 
@@ -478,7 +619,72 @@ document.querySelectorAll('nav button').forEach(btn=>{
 });
 
 /* ============ RENDER: BOARD / TASKS / CLIENTS ============ */
-function renderAll(){ renderBoard(); renderTasks(); renderClients(); }
+function renderAll(){ renderBoard(); renderTasks(); renderClients(); renderStatTiles(); renderSidePanels(); renderFinanceTab(); }
+
+function logActivity(p, message){
+  if(!p.activityLog) p.activityLog = [];
+  p.activityLog.unshift({time:new Date().toISOString(), message});
+  if(p.activityLog.length>50) p.activityLog.length = 50;
+}
+
+function renderStatTiles(){
+  const el = document.getElementById('statTiles');
+  if(!el) return;
+  const today = todayStr();
+  const active = state.projects.filter(p=>{
+    const stages = stagesFor(p.category);
+    const last = stages.length-1;
+    return p.stage < last;
+  }).length;
+  const todaysShoots = state.projects.filter(p=>p.shootStart && p.shootStart<=today && (p.shootEnd||p.shootStart)>=today).length;
+  const pendingQuotes = state.projects.filter(p=>stagesFor(p.category)[p.stage]==='Quotation').length;
+  const outstandingInvoices = state.projects.filter(p=>{
+    const s = stagesFor(p.category)[p.stage];
+    return s==='Invoicing';
+  }).length;
+  const urgentTasks = state.tasks.filter(t=>!t.done && t.due && t.due<=addDays(today,14)).length;
+  const outstandingBalance = state.projects.reduce((s,p)=>s+Math.max(0,projectBalanceDue(p)),0);
+  const tiles = [
+    {n:active, l:'Active Productions'},
+    {n:todaysShoots, l:"Today's Shoots"},
+    {n:pendingQuotes, l:'Pending Quotes'},
+    {n:outstandingInvoices, l:'Outstanding Invoices'},
+    {n:urgentTasks, l:'Urgent Tasks'},
+    {n:'$'+outstandingBalance.toFixed(0), l:'Balance Outstanding'}
+  ];
+  el.innerHTML = tiles.map(t=>`<div class="stattile"><div class="stnum">${t.n}</div><div class="stlabel">${t.l}</div></div>`).join('');
+}
+
+function renderSidePanels(){
+  const todayEl = document.getElementById('sideTodayEl');
+  const upcomingEl = document.getElementById('sideUpcomingEl');
+  const overdueEl = document.getElementById('sideOverdueEl');
+  if(!todayEl) return;
+  const today = todayStr();
+
+  const todays = state.projects.filter(p=>p.shootStart && p.shootStart<=today && (p.shootEnd||p.shootStart)>=today);
+  todayEl.innerHTML = todays.length ? todays.map(p=>`<div class="sideitem"><span class="si-title">${p.name}</span><span class="si-meta">${clientName(p.clientId)}</span></div>`).join('') : '<div class="small">Nothing on today.</div>';
+
+  const upcoming = state.tasks.filter(t=>!t.done && t.due && t.due>today && t.due<=addDays(today,7)).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,6);
+  upcomingEl.innerHTML = upcoming.length ? upcoming.map(t=>`<div class="sideitem"><span class="si-title">${t.title}</span><span class="si-meta">${t.due}</span></div>`).join('') : '<div class="small">Nothing due in the next 7 days.</div>';
+
+  const overdue = state.tasks.filter(t=>!t.done && t.due && t.due<today).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,6);
+  overdueEl.innerHTML = overdue.length ? overdue.map(t=>`<div class="sideitem"><span class="si-title">${t.title}</span><span class="si-meta">${t.due}</span></div>`).join('') : '<div class="small">Nothing overdue. ✓</div>';
+
+  renderSinceYesterday();
+}
+
+function renderSinceYesterday(){
+  const el = document.getElementById('sideSinceYesterdayEl');
+  if(!el) return;
+  const cutoff = Date.now() - 24*60*60*1000;
+  const events = [];
+  state.projects.forEach(p=>(p.activityLog||[]).forEach(a=>{
+    if(new Date(a.time).getTime() >= cutoff) events.push({time:a.time, message:`${p.name}: ${a.message}`});
+  }));
+  events.sort((a,b)=> new Date(b.time)-new Date(a.time));
+  el.innerHTML = events.length ? events.slice(0,8).map(e=>`<div class="sideitem"><span class="si-title">${e.message}</span><span class="si-meta">${new Date(e.time).toLocaleString('en-SG')}</span></div>`).join('') : '<div class="small">No changes in the last 24 hours.</div>';
+}
 
 function clientName(id){ const c = state.clients.find(c=>c.id===id); return c ? c.name : '—'; }
 
@@ -529,26 +735,83 @@ function renderBoard(){
   renderBoardFor('boardEl2', EVENTS_STAGES, p=>p.category==='Events Setup');
 }
 
+function todayStr(){ return new Date().toISOString().slice(0,10); }
 function renderTasks(){
   const list = document.getElementById('taskListEl');
   list.innerHTML='';
+  // urgency order: overdue & upcoming by nearest due date first, undated/TBC last, done at the very bottom
   const sorted = [...state.tasks].sort((a,b)=>{
     if(a.done!==b.done) return a.done? 1: -1;
-    return (a.due||'9999').localeCompare(b.due||'9999');
+    return (a.due||'9999-99-99').localeCompare(b.due||'9999-99-99');
   });
   if(sorted.length===0){ list.innerHTML = '<div class="empty">No tasks yet — add one to get started.</div>'; return; }
+  const today = todayStr();
   sorted.forEach(t=>{
     const row = document.createElement('div');
-    row.className = 'taskrow' + (t.done ? ' done':'');
+    let cls = 'taskrow';
+    const isTbc = !!t.tbcFlag || (t.type==='clientTest' && t.result==='Fail' && t.nextTestTBC);
+    if(t.done){ cls += ' done'; }
+    else if(isTbc){ cls += ' tbc'; }
+    else if(t.due && t.due < today){ cls += ' overdue'; }
+    else if(t.due && t.due <= addDays(today,14)){ cls += ' duesoon'; }
+    row.className = cls;
     const proj = state.projects.find(p=>p.id===t.projectId);
+    const dateLabel = isTbc && !t.due ? 'TBC' : (t.due || 'no date');
+
+    let testCtrl = '';
+    if(t.type==='clientTest'){
+      testCtrl = `<div class="testctrl">
+        <span class="small">Result:</span>
+        <button class="${t.result==='Pass'?'selected pass':''}" onclick="setTestResult('${t.id}','Pass')">Pass</button>
+        <button class="${t.result==='Fail'?'selected fail':''}" onclick="setTestResult('${t.id}','Fail')">Fail</button>
+        ${t.result==='Fail' ? `
+          <label><input type="checkbox" ${t.nextTestTBC?'checked':''} onchange="toggleNextTestTBC('${t.id}',this.checked)"> TBC</label>
+          ${!t.nextTestTBC ? `<input type="date" value="${t.nextTestDate||''}" onchange="setNextTestDate('${t.id}',this.value)">` : ''}
+        ` : ''}
+      </div>`;
+    }
+
     row.innerHTML = `
-      <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
-      <div class="ttitle">${t.title}${proj ? ` <span class="small">— ${proj.name}</span>` : ''}</div>
-      <div class="tmeta">${t.due || 'no date'}</div>
-      <div class="tdel" onclick="deleteTask('${t.id}')">✕</div>
+      <div style="display:flex;align-items:center;gap:10px;width:100%;">
+        <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
+        <div class="ttitle">${t.title}${proj ? ` <span class="small">— ${proj.name}</span>` : ''}</div>
+        <div class="tmeta">${dateLabel}</div>
+        <div class="tdel" onclick="deleteTask('${t.id}')">✕</div>
+      </div>
+      ${testCtrl}
     `;
     list.appendChild(row);
   });
+}
+function setTestResult(taskId, result){
+  const t = state.tasks.find(x=>x.id===taskId); if(!t) return;
+  t.result = result;
+  if(result==='Pass'){ t.nextTestDate=''; t.nextTestTBC=false; state.tasks = state.tasks.filter(x=>x.retestOf!==t.id); }
+  save('tasks'); renderTasks();
+}
+function setNextTestDate(taskId, value){
+  const t = state.tasks.find(x=>x.id===taskId); if(!t) return;
+  t.nextTestDate = value; t.nextTestTBC = false;
+  applyRetest(t);
+  save('tasks'); renderTasks();
+}
+function toggleNextTestTBC(taskId, checked){
+  const t = state.tasks.find(x=>x.id===taskId); if(!t) return;
+  t.nextTestTBC = checked;
+  if(checked) t.nextTestDate = '';
+  applyRetest(t);
+  save('tasks'); renderTasks();
+}
+function applyRetest(t){
+  state.tasks = state.tasks.filter(x=>x.retestOf!==t.id);
+  const baseName = t.title.replace(/^Client testing( \(retest\))? – /,'');
+  if(t.result==='Fail'){
+    if(t.nextTestTBC){
+      state.tasks.push({id:uid(), title:`Client testing (retest) – ${baseName}`, due:'', done:false, autoGen:true, type:'clientTest', projectId:t.projectId, sourceId:t.sourceId, retestOf:t.id, result:null, nextTestDate:'', nextTestTBC:false, tbcFlag:true});
+    } else if(t.nextTestDate){
+      state.tasks.push({id:uid(), title:`Client testing (retest) – ${baseName}`, due:t.nextTestDate, done:false, autoGen:true, type:'clientTest', projectId:t.projectId, sourceId:t.sourceId, retestOf:t.id, result:null, nextTestDate:'', nextTestTBC:false});
+    }
+  }
 }
 
 function renderClients(){
@@ -596,12 +859,31 @@ function onCategoryChange(){
   renderDynamicSection();
 }
 
+function switchWsTab(name){
+  document.querySelectorAll('#wsTabs button').forEach(b=>b.classList.toggle('active', b.dataset.ws===name));
+  document.querySelectorAll('.wspane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ws-'+name).classList.add('active');
+}
+function renderActivityLog(p){
+  const el = document.getElementById('activityLogEl');
+  if(!p || !p.activityLog || p.activityLog.length===0){ el.innerHTML='<div class="empty">No activity yet.</div>'; return; }
+  el.innerHTML = p.activityLog.map(a=>`<div class="activityrow"><span class="a-time">${new Date(a.time).toLocaleString('en-SG')}</span>${a.message}</div>`).join('');
+}
+function updatePaymentStatusDisplay(cat, stage){
+  const stages = stagesFor(cat);
+  const label = stages[stage];
+  const el = document.getElementById('paymentStatusDisplay');
+  if(label==='Paid'){ el.textContent = '✓ Paid'; el.style.color = 'var(--teal)'; }
+  else if(label==='Invoicing'){ el.textContent = 'Invoice sent — awaiting payment'; el.style.color = '#C7383F'; }
+  else { el.textContent = 'Not yet invoiced'; el.style.color = 'var(--ink-soft)'; }
+}
+
 function openProjectModal(id){
   refreshClientDropdown();
   populateCategoryDropdown();
   editingProjectId = id || null;
   const p = id ? getProject(id) : null;
-  document.getElementById('projTitle').textContent = p ? 'Edit Project' : 'New Project';
+  document.getElementById('projTitle').textContent = p ? p.name : 'New Production';
   document.getElementById('projId').value = id || '';
   document.getElementById('projClient').value = p ? p.clientId : (state.clients[0]?.id||'');
   document.getElementById('projName').value = p ? p.name : '';
@@ -614,14 +896,20 @@ function openProjectModal(id){
   document.getElementById('stageControlsWrap').style.display = 'flex';
   refreshStageDropdown(cat, p ? p.stage : 0);
   document.getElementById('deleteProjBtn').style.display = p ? 'inline' : 'none';
+  document.getElementById('projQuoteAmount').value = p ? (p.quoteAmount||0) : 0;
+  document.getElementById('projInvoiceAmount').value = p ? (p.invoiceAmount||0) : 0;
+  updatePaymentStatusDisplay(cat, p ? p.stage : 0);
+  renderActivityLog(p);
   renderDynamicSection();
+  renderFinanceDynamic();
+  switchWsTab('overview');
   document.getElementById('projectOverlay').classList.add('show');
 }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
 function saveProjectData(){
   const name = document.getElementById('projName').value.trim();
-  if(!name){ alert('Give the project a name'); return null; }
+  if(!name){ alert('Give the production a name'); return null; }
   const clientId = document.getElementById('projClient').value;
   if(!clientId){ alert('Add a client first (Clients tab)'); return null; }
   const category = document.getElementById('projCategory').value;
@@ -630,20 +918,28 @@ function saveProjectData(){
   const shootEnd = document.getElementById('projShootEnd').value;
   const notes = document.getElementById('projNotes').value;
   const stage = parseInt(document.getElementById('projStage').value)||0;
+  const quoteAmount = parseFloat(document.getElementById('projQuoteAmount').value)||0;
+  const invoiceAmount = parseFloat(document.getElementById('projInvoiceAmount').value)||0;
 
   if(editingProjectId){
     const p = getProject(editingProjectId);
+    if(p.stage!==stage){ logActivity(p, `Stage changed: ${stagesFor(p.category)[p.stage]} → ${stagesFor(category)[stage]}`); }
+    if(p.name!==name){ logActivity(p, `Renamed to "${name}"`); }
     p.clientId=clientId; p.name=name; p.category=category; p.subcategory=subcategory;
     p.shootStart=shootStart; p.shootEnd=shootEnd; p.notes=notes; p.stage=stage;
+    p.quoteAmount=quoteAmount; p.invoiceAmount=invoiceAmount;
   } else {
     const newId = uid();
     state.projects.push({
       id:newId, clientId, name, category, subcategory, shootStart, shootEnd, notes, stage:0,
+      quoteAmount, invoiceAmount, activityLog:[{time:new Date().toISOString(), message:'Production created'}],
       fabItems:[], wigItems:[], setupItems:[]
     });
     editingProjectId = newId;
   }
   save('projects');
+  updatePaymentStatusDisplay(category, stage);
+  renderActivityLog(getProject(editingProjectId));
   return editingProjectId;
 }
 function saveProject(){
@@ -687,9 +983,13 @@ function fabItemCardHtml(item){
   const allPurchased = item.needsPurchase && item.purchaseList && item.purchaseList.length>0 && item.purchaseList.every(r=>r.purchased);
   const purchFlag = !item.needsPurchase ? '' :
     `<div class="purchflag ${allPurchased?'done':'pending'}">${allPurchased ? '✓ All purchased' : `${(item.purchaseList||[]).filter(r=>r.purchased).length}/${(item.purchaseList||[]).length} purchased`}</div>`;
+  const comps = item.components||[];
+  const allDone = item.needsFabricating && comps.length>0 && comps.every(c=>c.done);
+  const compFlag = !item.needsFabricating ? '' :
+    `<div class="purchflag ${allDone?'done':'pending'}">${allDone ? '✓ All components ready' : `${comps.filter(c=>c.done).length}/${comps.length} ready`}</div>`;
   return `<div class="fabcard">
     <div class="fabcard-head">
-      <input value="${item.name||''}" placeholder="e.g. Neck Prosthetic" onchange="updateItemField('fabItems','${item.id}','name',this.value)">
+      <input value="${item.name||''}" placeholder="e.g. Chopstick in Eye" onchange="updateItemField('fabItems','${item.id}','name',this.value)">
       <select onchange="updateItemField('fabItems','${item.id}','kind',this.value)">
         <option value="SFX" ${item.kind==='SFX'?'selected':''}>SFX</option>
         <option value="Costume" ${item.kind==='Costume'?'selected':''}>Costume</option>
@@ -704,15 +1004,50 @@ function fabItemCardHtml(item){
       ${item.needsTesting? `<label>Test date <input type="date" value="${item.testDate||''}" onchange="updateItemField('fabItems','${item.id}','testDate',this.value)"></label>` : ''}
     </div>
     <div class="fabcard-row">
-      <label><input type="checkbox" ${item.needsPurchase?'checked':''} onchange="updateItemField('fabItems','${item.id}','needsPurchase',this.checked)"> Needs purchasing</label>
+      <label><input type="checkbox" ${item.needsPurchase?'checked':''} onchange="updateItemField('fabItems','${item.id}','needsPurchase',this.checked)"> Purchasing</label>
+      <label><input type="checkbox" ${item.needsFabricating?'checked':''} onchange="updateItemField('fabItems','${item.id}','needsFabricating',this.checked)"> Fabricating</label>
     </div>
-    ${item.needsPurchase ? purchaseTableHtml('fabItems', item) + purchFlag : ''}
+    ${item.needsPurchase ? `<div class="small" style="margin-top:8px;font-weight:600;">Purchase list</div>` + purchaseTableHtml('fabItems', item) + purchFlag : ''}
+    ${item.needsFabricating ? `<div class="small" style="margin-top:8px;font-weight:600;">Components to fabricate (e.g. chopstick – get from stock, silicone – to purchase, blood – to make)</div>` + componentTableHtml(item) + compFlag : ''}
   </div>`;
+}
+function componentTableHtml(item){
+  const comps = item.components||[];
+  return `<table class="purchtable"><thead><tr><th>Component</th><th>Source</th><th>Ready</th><th></th></tr></thead><tbody>
+    ${comps.map(c=>`<tr>
+      <td><input value="${c.name||''}" placeholder="e.g. Chopstick" onchange="updateComponentRow('${item.id}','${c.id}','name',this.value)"></td>
+      <td><select onchange="updateComponentRow('${item.id}','${c.id}','source',this.value)">
+        <option value="Get from Stock" ${c.source==='Get from Stock'?'selected':''}>Get from stock</option>
+        <option value="To Purchase" ${c.source==='To Purchase'?'selected':''}>To purchase</option>
+        <option value="To Make" ${c.source==='To Make'?'selected':''}>To make</option>
+      </select></td>
+      <td><input type="checkbox" ${c.done?'checked':''} onchange="updateComponentRow('${item.id}','${c.id}','done',this.checked)"></td>
+      <td><span class="danger" onclick="removeComponentRow('${item.id}','${c.id}')">✕</span></td>
+    </tr>`).join('')}
+  </tbody></table>
+  <button type="button" class="ghost-btn" style="margin-top:4px;" onclick="addComponentRow('${item.id}')">+ Add component</button>`;
+}
+function addComponentRow(itemId){
+  const p = getProject(editingProjectId); const item = p.fabItems.find(i=>i.id===itemId);
+  item.components = item.components||[];
+  item.components.push({id:uid(), name:'', source:'Get from Stock', done:false});
+  save('projects'); renderDynamicSection();
+}
+function updateComponentRow(itemId, compId, field, value){
+  const p = getProject(editingProjectId); const item = p.fabItems.find(i=>i.id===itemId);
+  const c = item.components.find(x=>x.id===compId);
+  c[field] = value;
+  save('projects'); renderDynamicSection();
+}
+function removeComponentRow(itemId, compId){
+  const p = getProject(editingProjectId); const item = p.fabItems.find(i=>i.id===itemId);
+  item.components = item.components.filter(x=>x.id!==compId);
+  save('projects'); renderDynamicSection();
 }
 function addFabItem(){
   const id = saveProjectData(); if(!id) return;
   const p = getProject(id);
-  p.fabItems.push({id:uid(), kind:'SFX', name:'', pieces:1, needsTesting:false, testDate:'', needsPurchase:false, purchaseList:[]});
+  p.fabItems.push({id:uid(), kind:'SFX', name:'', pieces:1, needsTesting:false, testDate:'', needsPurchase:false, purchaseList:[], needsFabricating:false, components:[]});
   save('projects'); renderDynamicSection();
 }
 
@@ -798,6 +1133,149 @@ function removePurchaseRow(collection, itemId, rowId){
   save('projects'); renderDynamicSection();
 }
 
+/* ============ FINANCE ============ */
+function projectExpenseRows(p){
+  const rows = [];
+  (p.fabItems||[]).forEach(i=>(i.purchaseList||[]).forEach(r=>{
+    if(r.item || r.actualCost) rows.push({source:i.name||'(unnamed fab item)', item:r.item, qty:r.qty||1, cost:parseFloat(r.actualCost)||0, purchased:!!r.purchased});
+  }));
+  (p.wigItems||[]).forEach(i=>(i.purchaseList||[]).forEach(r=>{
+    if(r.item || r.actualCost) rows.push({source:i.name||'(unnamed wig)', item:r.item, qty:r.qty||1, cost:parseFloat(r.actualCost)||0, purchased:!!r.purchased});
+  }));
+  return rows;
+}
+function projectItemizedExpenseTotal(p){ return projectExpenseRows(p).reduce((s,r)=>s+r.cost,0); }
+function projectOtherExpenseTotal(p){ return (p.otherExpenses||[]).reduce((s,e)=>s+(parseFloat(e.amount)||0),0); }
+function projectTotalExpenses(p){ return projectItemizedExpenseTotal(p) + projectOtherExpenseTotal(p); }
+function projectTotalPaid(p){ return (p.payments||[]).reduce((s,pay)=>s+(parseFloat(pay.amount)||0),0); }
+function projectBalanceDue(p){ return (p.invoiceAmount||0) - projectTotalPaid(p); }
+function projectProfit(p){ const revenue = (p.invoiceAmount||0) || (p.quoteAmount||0); return revenue - projectTotalExpenses(p); }
+function projectPaymentStatusLabel(p){
+  const invoiced = (p.invoiceAmount||0) > 0;
+  const paid = projectTotalPaid(p);
+  if(!invoiced) return 'Not invoiced';
+  if(paid<=0) return 'Unpaid';
+  if(paid < p.invoiceAmount) return 'Partially paid';
+  if(paid > p.invoiceAmount) return 'Overpaid';
+  return 'Paid in full';
+}
+function commitFinanceHeader(){
+  const id = saveProjectData(); if(!id) return;
+  renderFinanceDynamic(); renderFinanceTab(); renderStatTiles();
+}
+function renderFinanceDynamic(){
+  const el = document.getElementById('financeDynamicEl');
+  if(!el) return;
+  const p = editingProjectId ? getProject(editingProjectId) : null;
+  if(!p){ el.innerHTML = '<div class="small">Save the production first, then come back here to log expenses and payments.</div>'; return; }
+  const expRows = projectExpenseRows(p);
+  const itemizedTotal = projectItemizedExpenseTotal(p);
+  const otherTotal = projectOtherExpenseTotal(p);
+  const totalExpenses = itemizedTotal + otherTotal;
+  const paid = projectTotalPaid(p);
+  const balance = projectBalanceDue(p);
+  const profit = projectProfit(p);
+  el.innerHTML = `
+    <div class="subsection">
+      <label>Itemized Expenses (from Fabrication &amp; Wigs purchase lists)</label>
+      ${expRows.length ? `<table class="purchtable"><thead><tr><th>Linked item</th><th>Purchase</th><th>Qty</th><th>Cost</th><th>✓</th></tr></thead><tbody>
+        ${expRows.map(r=>`<tr><td>${r.source}</td><td>${r.item||'—'}</td><td>${r.qty}</td><td>${r.cost.toFixed(2)}</td><td>${r.purchased?'✓':''}</td></tr>`).join('')}
+      </tbody></table>` : '<div class="small">No purchase items yet — add them in the Fabrication &amp; Wigs tab.</div>'}
+      <div class="small" style="margin-top:6px;font-weight:700;">Itemized subtotal: SGD ${itemizedTotal.toFixed(2)}</div>
+    </div>
+    <div class="subsection">
+      <label>Other Expenses (not tied to a fab/wig item — transport, freelance help, etc.)</label>
+      <table class="purchtable"><thead><tr><th>Description</th><th>Amount</th><th></th></tr></thead><tbody>
+        ${(p.otherExpenses||[]).map(e=>`<tr>
+          <td><input value="${e.name||''}" onchange="updateOtherExpense('${e.id}','name',this.value)"></td>
+          <td><input type="number" value="${e.amount||0}" onchange="updateOtherExpense('${e.id}','amount',this.value)"></td>
+          <td><span class="danger" onclick="removeOtherExpense('${e.id}')">✕</span></td>
+        </tr>`).join('')}
+      </tbody></table>
+      <button type="button" class="ghost-btn" style="margin-top:4px;" onclick="addOtherExpense()">+ Add expense</button>
+      <div class="small" style="margin-top:6px;font-weight:700;">Other subtotal: SGD ${otherTotal.toFixed(2)}</div>
+    </div>
+    <div class="subsection">
+      <label>Payments Received</label>
+      <table class="purchtable"><thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody>
+        ${(p.payments||[]).map(pay=>`<tr>
+          <td><input type="date" value="${pay.date||''}" onchange="updatePayment('${pay.id}','date',this.value)"></td>
+          <td><input type="number" value="${pay.amount||0}" onchange="updatePayment('${pay.id}','amount',this.value)"></td>
+          <td><input value="${pay.note||''}" onchange="updatePayment('${pay.id}','note',this.value)"></td>
+          <td><span class="danger" onclick="removePayment('${pay.id}')">✕</span></td>
+        </tr>`).join('')}
+      </tbody></table>
+      <button type="button" class="ghost-btn" style="margin-top:4px;" onclick="addPayment()">+ Log payment</button>
+    </div>
+    <div class="subsection" style="display:flex;flex-wrap:wrap;gap:18px;">
+      <div><div class="small">TOTAL EXPENSES</div><div style="font-weight:700;">SGD ${totalExpenses.toFixed(2)}</div></div>
+      <div><div class="small">PAID TO DATE</div><div style="font-weight:700;">SGD ${paid.toFixed(2)}</div></div>
+      <div><div class="small">BALANCE DUE</div><div style="font-weight:700;color:${balance>0?'var(--oxblood)':'var(--teal)'};">SGD ${balance.toFixed(2)}</div></div>
+      <div><div class="small">EST. PROFIT</div><div style="font-weight:700;color:${profit>=0?'var(--teal)':'var(--oxblood)'};">SGD ${profit.toFixed(2)}</div></div>
+      <div><div class="small">STATUS</div><div style="font-weight:700;">${projectPaymentStatusLabel(p)}</div></div>
+    </div>
+  `;
+}
+function addOtherExpense(){
+  const p = getProject(editingProjectId); if(!p) return;
+  p.otherExpenses = p.otherExpenses||[];
+  p.otherExpenses.push({id:uid(), name:'', amount:0});
+  save('projects'); renderFinanceDynamic();
+}
+function updateOtherExpense(id, field, value){
+  const p = getProject(editingProjectId); if(!p) return;
+  const e = p.otherExpenses.find(x=>x.id===id); if(!e) return;
+  e[field] = field==='amount' ? (parseFloat(value)||0) : value;
+  save('projects'); renderFinanceDynamic();
+}
+function removeOtherExpense(id){
+  const p = getProject(editingProjectId); if(!p) return;
+  p.otherExpenses = p.otherExpenses.filter(x=>x.id!==id);
+  save('projects'); renderFinanceDynamic();
+}
+function addPayment(){
+  const p = getProject(editingProjectId); if(!p) return;
+  p.payments = p.payments||[];
+  p.payments.push({id:uid(), date:todayStr(), amount:0, note:''});
+  save('projects'); logActivity(p,'Payment logged'); save('projects'); renderFinanceDynamic(); renderActivityLog(p);
+}
+function updatePayment(id, field, value){
+  const p = getProject(editingProjectId); if(!p) return;
+  const pay = p.payments.find(x=>x.id===id); if(!pay) return;
+  pay[field] = field==='amount' ? (parseFloat(value)||0) : value;
+  save('projects'); renderFinanceDynamic();
+}
+function removePayment(id){
+  const p = getProject(editingProjectId); if(!p) return;
+  p.payments = p.payments.filter(x=>x.id!==id);
+  save('projects'); renderFinanceDynamic();
+}
+function renderFinanceTab(){
+  const el = document.getElementById('financeTableEl');
+  if(!el) return;
+  if(state.projects.length===0){ el.innerHTML = '<div class="empty">No productions yet.</div>'; return; }
+  let totQuote=0, totInvoice=0, totExpenses=0, totPaid=0, totBalance=0, totProfit=0;
+  const rows = state.projects.map(p=>{
+    const exp = projectTotalExpenses(p), paid = projectTotalPaid(p), bal = projectBalanceDue(p), profit = projectProfit(p);
+    totQuote += (p.quoteAmount||0); totInvoice += (p.invoiceAmount||0); totExpenses += exp; totPaid += paid; totBalance += bal; totProfit += profit;
+    return `<tr style="cursor:pointer;" onclick="openProjectModal('${p.id}')">
+      <td>${p.name}</td><td>${clientName(p.clientId)}</td>
+      <td>${(p.quoteAmount||0).toFixed(2)}</td><td>${(p.invoiceAmount||0).toFixed(2)}</td>
+      <td>${exp.toFixed(2)}</td><td style="color:${profit>=0?'var(--teal)':'var(--oxblood)'};">${profit.toFixed(2)}</td>
+      <td>${paid.toFixed(2)}</td><td style="color:${bal>0?'var(--oxblood)':'inherit'};">${bal.toFixed(2)}</td>
+      <td>${projectPaymentStatusLabel(p)}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML = `<table class="purchtable" style="font-size:12px;"><thead><tr>
+    <th>Production</th><th>Client</th><th>Quote</th><th>Invoice</th><th>Expenses</th><th>Profit</th><th>Paid</th><th>Balance</th><th>Status</th>
+  </tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr style="font-weight:700;border-top:2px solid var(--line);">
+    <td colspan="2">TOTAL</td><td>${totQuote.toFixed(2)}</td><td>${totInvoice.toFixed(2)}</td><td>${totExpenses.toFixed(2)}</td>
+    <td style="color:${totProfit>=0?'var(--teal)':'var(--oxblood)'};">${totProfit.toFixed(2)}</td><td>${totPaid.toFixed(2)}</td>
+    <td style="color:${totBalance>0?'var(--oxblood)':'inherit'};">${totBalance.toFixed(2)}</td><td></td>
+  </tr></tfoot></table>`;
+}
+
 /* ============ EVENTS SETUP ITEMS ============ */
 function renderSetupSectionHtml(p){
   const items = p ? (p.setupItems||[]) : [];
@@ -881,7 +1359,7 @@ function buildFabTasks(p, item){
     if(item.needsPurchase) tasks.push({title:`Purchase materials – ${item.name}`, due:addDays(testPrepDeadline,-PURCHASE_BUFFER)});
     tasks.push({title:`Fabricate test piece – ${item.name} (1 pc)`, due:testPrepDeadline});
     tasks.push({title:`Internal test check – ${item.name}`, due:testPrepDeadline});
-    tasks.push({title:`Client testing – ${item.name}`, due:item.testDate});
+    tasks.push({title:`Client testing – ${item.name}`, due:item.testDate, type:'clientTest', result:null, nextTestDate:'', nextTestTBC:false});
     tasks.push({title:`Fabricate remaining pieces – ${item.name} (x${item.pieces})`, due:fabDeadline});
   } else {
     if(item.needsPurchase) tasks.push({title:`Purchase materials – ${item.name}`, due:addDays(fabDeadline,-PURCHASE_BUFFER)});
@@ -917,7 +1395,10 @@ function generateAllTasksForProject(id){
   (p.wigItems||[]).forEach(item=>{
     buildWigTasks(p,item).forEach(t=>{ state.tasks.push({id:uid(), projectId:id, autoGen:true, sourceId:item.id, done:false, ...t}); count++; });
   });
-  save('tasks'); renderAll();
+  save('projects'); save('tasks'); renderAll();
+  logActivity(p, `Generated ${count} tasks (fabrication/wig task list)`);
+  save('projects');
+  renderActivityLog(p);
   alert(`Generated ${count} tasks in the Tasks tab.`);
 }
 
@@ -988,6 +1469,43 @@ function deleteClient(){
   state.clients = state.clients.filter(c=>c.id!==editingClientId);
   save('clients'); closeModal('clientOverlay'); renderAll();
 }
+
+/* ============ COMMAND PALETTE ============ */
+let cmdkSelIdx = 0;
+function openCmdk(){
+  document.getElementById('cmdkOverlay').classList.add('show');
+  const input = document.getElementById('cmdkInput');
+  input.value=''; input.focus();
+  renderCmdkResults('');
+}
+function closeCmdk(){ document.getElementById('cmdkOverlay').classList.remove('show'); }
+function cmdkAction(type, id){
+  closeCmdk();
+  if(type==='project') openProjectModal(id);
+  else if(type==='client') openClientModal(id);
+  else if(type==='new-project') openProjectModal();
+  else if(type==='new-task') openTaskModal();
+  else if(type==='new-client') openClientModal();
+}
+function renderCmdkResults(query){
+  const q = query.trim().toLowerCase();
+  const results = [];
+  if(q==='' || 'new project'.includes(q)) results.push({type:'new-project', label:'+ New Production', meta:'quick add'});
+  if(q==='' || 'new task'.includes(q)) results.push({type:'new-task', label:'+ New Task', meta:'quick add'});
+  if(q==='' || 'new client'.includes(q)) results.push({type:'new-client', label:'+ New Client', meta:'quick add'});
+  state.projects.filter(p=>!q || p.name.toLowerCase().includes(q) || clientName(p.clientId).toLowerCase().includes(q))
+    .forEach(p=>results.push({type:'project', id:p.id, label:p.name, meta:clientName(p.clientId)+' · '+p.category}));
+  state.clients.filter(c=>!q || c.name.toLowerCase().includes(q))
+    .forEach(c=>results.push({type:'client', id:c.id, label:c.name, meta:'client'}));
+  const el = document.getElementById('cmdkResults');
+  el.innerHTML = results.length ? results.map((r,i)=>`<div class="cmdk-item${i===0?' sel':''}" onclick="cmdkAction('${r.type}','${r.id||''}')"><span>${r.label}</span><span class="ci-meta">${r.meta}</span></div>`).join('') : '<div class="cmdk-item">No matches</div>';
+}
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmdk(); }
+  else if(e.key==='Escape'){ closeCmdk(); }
+});
+document.getElementById('cmdkInput').addEventListener('input', e=>renderCmdkResults(e.target.value));
+document.getElementById('cmdkOverlay').addEventListener('click', e=>{ if(e.target.id==='cmdkOverlay') closeCmdk(); });
 
 loadState();
 </script>
